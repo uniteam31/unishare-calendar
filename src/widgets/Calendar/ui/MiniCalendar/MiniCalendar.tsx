@@ -1,5 +1,5 @@
 import React from 'react';
-import Calendar, { OnArgs } from 'react-calendar';
+import Calendar, { type OnArgs } from 'react-calendar';
 import './calendar.scss';
 
 interface ICalendarProps {

@@ -5,7 +5,7 @@ import interactionPlugin from '@fullcalendar/interaction';
 import FullCalendar from '@fullcalendar/react';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import React, { useEffect, useRef } from 'react';
-import { IEvent } from 'entities/Event';
+import type { IEvent } from 'entities/Event';
 
 interface ICalendarProps {
 	currentDate: Date;
