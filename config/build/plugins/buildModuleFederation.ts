@@ -7,7 +7,8 @@ export const buildModuleFederation = () => {
 		filename: 'remoteEntry.js',
 		//
 		exposes: {
-			'./App': 'app/App.tsx',
+			// './App': 'app/App.tsx',
+			'./Widget': 'widgets/CalendarWidget/index.ts',
 		},
 		shared: {
 			...packageJson.dependencies,
