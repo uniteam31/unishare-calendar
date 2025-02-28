@@ -1,4 +1,5 @@
 import { createRoot } from 'react-dom/client';
+import App from 'app/App';
 
 const domNode = document.getElementById('root');
 
@@ -8,4 +9,4 @@ if (!domNode) {
 
 const root = createRoot(domNode as HTMLElement);
 
-root.render(<></>);
+root.render(<App />);

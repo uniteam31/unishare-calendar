@@ -7,23 +7,27 @@ export const buildModuleFederation = () => {
 		filename: 'remoteEntry.js',
 		//
 		exposes: {
-			// './App': 'app/App.tsx',
+			'./App': 'app/App.tsx',
 			'./Widget': 'widgets/CalendarWidget/index.ts',
 		},
 		shared: {
 			...packageJson.dependencies,
-			// 	react: {
-			// 		eager: true,
-			// 		// requiredVersion: packageJson.dependencies['react'],
-			// 	},
-			// 	'react-router-dom': {
-			// 		eager: true,
-			// 		// requiredVersion: packageJson.dependencies['react-router-dom'],
-			// 	},
-			// 	'react-dom': {
-			// 		eager: true,
-			// 		// requiredVersion: packageJson.dependencies['react-dom'],
-			// 	},
+			react: {
+				singleton: true,
+				requiredVersion: packageJson.dependencies['react'],
+			},
+			'react-router-dom': {
+				singleton: true,
+				requiredVersion: packageJson.dependencies['react-router-dom'],
+			},
+			'react-dom': {
+				singleton: true,
+				requiredVersion: packageJson.dependencies['react-dom'],
+			},
+			zustand: {
+				singleton: true,
+				requiredVersion: packageJson.dependencies['zustand'],
+			},
 		},
 	});
 };
