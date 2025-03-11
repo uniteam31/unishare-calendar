@@ -8,10 +8,12 @@ import { Divider } from 'shared/ui';
 import s from './CalendarPage.module.scss';
 
 const CalendarPage = () => {
+	const { selectedEvent, setSelectedEvent } = useEventStore();
+	const { events } = useGetEvents();
+
 	const [currentDate, setCurrentDate] = useState<Date>(new Date());
 	const [isEventModalOpen, setIsEventModalOpen] = useState(false);
-	const { events } = useGetEvents();
-	const { selectedEvent, setSelectedEvent } = useEventStore();
+	const [spacesIds, setSpacesIds] = useState<string[]>([]);
 
 	useEffect(() => {
 		if (selectedEvent)
@@ -27,6 +29,10 @@ const CalendarPage = () => {
 		setIsEventModalOpen(false);
 		setSelectedEvent(null);
 	};
+
+	const filteredEvents = events.filter(event =>
+		spacesIds.some(space => event.spacesIds?.includes(space)) || spacesIds.length === 0
+	);
 
 	return (
 		<div className={s.CalendarPage}>
@@ -44,7 +50,10 @@ const CalendarPage = () => {
 					Пространства
 				</div>
 
-				<SpacesFilter />
+				<SpacesFilter
+					selectedSpacesIds={spacesIds}
+					setSelectedSpacesIds={setSpacesIds}
+				/>
 
 			</div>
 
@@ -54,7 +63,7 @@ const CalendarPage = () => {
 				<FullCalendar
 					currentDate={currentDate}
 					setCurrentDate={setCurrentDate}
-					events={events}
+					events={filteredEvents}
 				/>
 			</div>
 
