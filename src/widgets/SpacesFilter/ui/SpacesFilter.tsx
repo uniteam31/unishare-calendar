@@ -1,4 +1,5 @@
 import React from 'react';
+import { CheckboxItem } from 'shared/ui';
 import s from './SpacesFilter.module.scss';
 
 interface ISpacesFilterProps {
@@ -28,29 +29,72 @@ export const SpacesFilter = (props: ISpacesFilterProps) => {
 
 	return (
 		<div className={s.spacesList}>
-			<label className={s.spaceItem}>
-				<input
-					type="checkbox"
-					checked={selectedSpacesIds.length === spaces.length}
-					onChange={(event) => handleClickAllSpaces(event.target.checked)}
-				/>
-				Все пространства
-			</label>
+			<CheckboxItem
+				title={'Все пространства'}
+				checked={selectedSpacesIds.length === spaces.length}
+				onChange={(event) => handleClickAllSpaces(event.target.checked)}
+			/>
 			{spaces.map((space) => (
-				<label className={s.spaceItem} key={space._id}>
-					<input
-						type="checkbox"
-						checked={selectedSpacesIds.includes(space._id)}
-						onChange={(event) => handleClickSpaceItem(space._id, event.target.checked)}
-					/>
-					{ space.title }
-				</label>
+				<CheckboxItem
+					key={space._id}
+					title={space.title}
+					checked={selectedSpacesIds.includes(space._id)}
+					onChange={(event) => handleClickSpaceItem(space._id, event.target.checked)}
+				/>
 			))}
 		</div>
 	);
 };
 
 const spaces = [
+	{
+		_id: '111',
+		title: 'space numero 1',
+	},
+	{
+		_id: '222',
+		title: 'Vtoroye prostranstvo',
+	},
+	{
+		_id: '333',
+		title: 'IU3-82B',
+	},
+	{
+		_id: '111',
+		title: 'space numero 1',
+	},
+	{
+		_id: '222',
+		title: 'Vtoroye prostranstvo',
+	},
+	{
+		_id: '333',
+		title: 'IU3-82B',
+	},
+	{
+		_id: '111',
+		title: 'space numero 1',
+	},
+	{
+		_id: '222',
+		title: 'Vtoroye prostranstvo',
+	},
+	{
+		_id: '333',
+		title: 'IU3-82B',
+	},
+	{
+		_id: '111',
+		title: 'space numero 1',
+	},
+	{
+		_id: '222',
+		title: 'Vtoroye prostranstvo',
+	},
+	{
+		_id: '333',
+		title: 'IU3-82B',
+	},
 	{
 		_id: '111',
 		title: 'space numero 1',

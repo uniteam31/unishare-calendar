@@ -5,7 +5,7 @@ interface ICheckboxItemProps {
 	title: string;
 	checked?: boolean;
 	// eslint-disable-next-line no-unused-vars
-	onChange?: (event: ChangeEvent) => void;
+	onChange?: (event: ChangeEvent<HTMLInputElement>) => void;
 }
 
 export const CheckboxItem = (props: ICheckboxItemProps) => {
