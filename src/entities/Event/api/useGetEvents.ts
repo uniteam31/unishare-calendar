@@ -12,7 +12,6 @@ export const useGetEvents = () => {
 	const { data, error, isValidating, mutate } = useSWR('api/events', fetcher);
 
 	const events = data || [];
-	console.log(events);
 
 	return {
 		mutateEvents: mutate,
@@ -21,33 +20,3 @@ export const useGetEvents = () => {
 		isLoading: isValidating,
 	};
 };
-
-const mock: IEvent[] = [
-	{
-		_id: 1,
-		title: 'Event 1',
-		description: 'Desription! Desription Desription Desription Desription Desription!!!',
-		startTime: (new Date()).toISOString(),
-		endTime: (new Date(+ new Date() + 1000 * 60 * 60)).toISOString(),
-		createdAt: '',
-		updatedAt: '',
-	},
-	{
-		_id: 2,
-		title: 'Event 2',
-		description: 'ghfghdhgfk sdkjhfsdkhf gfys',
-		startTime: (new Date(+ new Date() + 1000 * 60 * 60 * 3)).toISOString(),
-		endTime: (new Date(+ new Date() + 1000 * 60 * 60 * 4)).toISOString(),
-		createdAt: '',
-		updatedAt: '',
-	},
-	{
-		_id: 3,
-		title: 'Event 3',
-		description: 'dkfjhlkehfjkhefjhwekjfhkwjenbznvbnvxznbcvbnzxiuwyeoiquwpeuppowfjfjlljflksjdlfjslf',
-		startTime: (new Date(+ new Date() + 1000 * 60 * 60 * 5)).toISOString(),
-		endTime: (new Date(+ new Date() + 1000 * 60 * 60 * 6)).toISOString(),
-		createdAt: '',
-		updatedAt: '',
-	},
-];

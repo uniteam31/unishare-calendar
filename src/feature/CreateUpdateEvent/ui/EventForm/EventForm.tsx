@@ -1,5 +1,6 @@
 import { TextArea } from '@uniteam31/uni-shared-ui';
 import { DatePicker } from 'antd';
+import dayjs from 'dayjs';
 import { useController, useFormContext } from 'react-hook-form';
 import { IEvent, useEventStore, useGetEvents } from 'entities/Event';
 import type { TEventFormFields } from 'entities/Event';
@@ -21,6 +22,7 @@ export const EventForm = ({ onClose }: IProps) => {
 
 	const {
 		createEvent,
+		updateEvent,
 		isLoading: isEventFormLoading,
 		error: eventFormErrors,
 	} = useCreateUpdateEvent();
@@ -44,7 +46,8 @@ export const EventForm = ({ onClose }: IProps) => {
 	} = useController({ control, name: 'description', defaultValue: selectedEvent?.description });
 
 	const updateCachedEvents = (newEvent: IEvent) => {
-		const updatedEvents = events.map((e) => e._id === newEvent?._id ? newEvent : e);
+		const updatedEvents = events.filter((e) => e._id !== newEvent?._id );
+		updatedEvents.push(newEvent);
 
 		mutateEvents(updatedEvents).finally();
 	};
@@ -52,15 +55,22 @@ export const EventForm = ({ onClose }: IProps) => {
 	const handleSubmit = () => {
 		const formValues = getValues();
 
-		createEvent({ formValues }).then((result) =>  {
-			onClose?.();
-			updateCachedEvents(result);
-		});
+		if (selectedEvent) {
+			updateEvent({ formValues, _id: selectedEvent._id }).then((result) =>  {
+				onClose?.();
+				updateCachedEvents(result);
+			});
+		} else {
+			createEvent({ formValues }).then((result) =>  {
+				onClose?.();
+				updateCachedEvents(result);
+			});
+		}
 	};
 
 	return (
 		<BaseFormModal
-			title={'Новое событие'}
+			title={selectedEvent ? 'Изменить событие' : 'Новое событие'}
 			//
 			isLoading={isEventFormLoading}
 			errors={eventFormErrors}
@@ -82,7 +92,7 @@ export const EventForm = ({ onClose }: IProps) => {
 				format="DD.MM.YYYY HH:mm"
 				onChange={onChangeStartTime}
 				onOk={onChangeStartTime}
-				value={startTime}
+				value={startTime && dayjs(startTime)}
 			/>
 
 			<DatePicker
@@ -92,7 +102,7 @@ export const EventForm = ({ onClose }: IProps) => {
 				format="DD.MM.YYYY HH:mm"
 				onChange={onChangeEndTime}
 				onOk={onChangeEndTime}
-				value={endTime}
+				value={endTime && dayjs(endTime)}
 			/>
 
 			<TextArea

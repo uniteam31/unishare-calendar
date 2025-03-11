@@ -1,0 +1,16 @@
+// FullCalendar Colors Vars
+:root {
+  --fc-today-bg-color: rgba(127, 190, 255, 0.3);
+  --fc-highlight-color: rgba(255, 202, 105, 0.3);
+
+  --fc-button-bg-color: var(--blue-color);
+  --fc-button-hover-bg-color: #2f8fff;
+  --fc-button-active-bg-color: #1363bf;
+  --fc-neutral-bg-color: #2f8fff;
+}
+
+// Delete border color
+.fc .fc-button {
+  border: none;
+  border-radius: var(--medium-round);
+}

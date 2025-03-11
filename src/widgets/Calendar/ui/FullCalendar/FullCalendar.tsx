@@ -1,11 +1,12 @@
-import { DatesSetArg } from '@fullcalendar/core';
 import ruLocale from '@fullcalendar/core/locales/ru';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import FullCalendar from '@fullcalendar/react';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import React, { useEffect, useRef } from 'react';
-import type { IEvent } from 'entities/Event';
+import { type IEvent, mapEventToFullCalendarEvent } from 'entities/Event';
+import { useFullCalendarHandlers } from '../../hooks/useFullCalendarHandlers';
+import './calendar.scss';
 
 interface ICalendarProps {
 	currentDate: Date;
@@ -15,7 +16,13 @@ interface ICalendarProps {
 }
 
 export const Calendar = (props: ICalendarProps) => {
-	const { currentDate, setCurrentDate, events } = props;
+	const { currentDate, events } = props;
+	const {
+		handleEventChange,
+		handleEventClick,
+		handleSelect,
+		handleDatesSet
+	} = useFullCalendarHandlers(props);
 	const calendarRef = useRef<FullCalendar>(null);
 
 	useEffect(() => {
@@ -25,34 +32,14 @@ export const Calendar = (props: ICalendarProps) => {
 		}
 	}, [currentDate]);
 
-	const handleDatesSet = (arg: DatesSetArg) => {
-		const newDate = arg.view.currentStart;
-		switch (arg.view.type) {
-			case 'dayGridMonth':
-				newDate.setDate(currentDate.getDate());
-				break;
-			case 'timeGridWeek':
-				newDate.setDate(newDate.getDate() + (currentDate.getDay() + 6) % 7);
-				break;
-			default:
-		}
-		if (newDate.getTime() === currentDate.getTime())
-			return;
-		setCurrentDate(newDate);
-	};
-
-	const calendarEvents = events.map((e) => ({
-		start: e.startTime,
-		end: e.endTime,
-		title: e.title,
-		allDay: e.allDay,
-	}));
+	const calendarEvents = events.map(mapEventToFullCalendarEvent);
 
 	return (
 		<FullCalendar
 			ref={calendarRef}
 			plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin ]}
 			initialView={'dayGridMonth'}
+			scrollTime="09:00:00"
 			themeSystem="yeti"
 			headerToolbar={{
 				left: 'prev,today,next',
@@ -62,9 +49,16 @@ export const Calendar = (props: ICalendarProps) => {
 			height="100%"
 			nowIndicator={true}
 			navLinks={true}
+			selectable={true}
+			editable={true}
+			droppable={true}
 			firstDay={1}
 			locale={ruLocale}
 			events={calendarEvents}
+			eventClick={handleEventClick}
+			eventDrop={handleEventChange}
+			eventResize={handleEventChange}
+			select={handleSelect}
 			datesSet={handleDatesSet}
 		/>
 	);

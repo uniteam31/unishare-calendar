@@ -1,11 +1,12 @@
 import { useCallback, useState } from 'react';
-import type { TEventFormFields, IEvent } from 'entities/Event';
+import { TEventFormFields, IEvent } from 'entities/Event';
 import { axiosInstance } from 'shared/api';
 import { getApiResponseErrorMessage } from 'shared/lib';
 import type { ApiResponse } from 'shared/types';
 
 interface ICreateUpdateEventProps {
 	formValues: Partial<TEventFormFields>;
+	_id?: number;
 }
 
 type TCreateUpdateEventResponse = ApiResponse<IEvent>;
@@ -26,14 +27,41 @@ export const useCreateUpdateEvent = () => {
 				formValues,
 			);
 
-			// TODO возвращать или нет?
-			const updatedPersonalData = response.data.data;
+			const createdEvent = response.data.data;
 
-			return updatedPersonalData;
+			return createdEvent;
 		} catch (error) {
 			const errorMessage =
 				getApiResponseErrorMessage(error) ||
-				'Произошла неизвестная ошибка при входе в аккаунт';
+				'Произошла неизвестная ошибка при создании события';
+
+			setError(errorMessage);
+
+			throw new Error(errorMessage);
+		} finally {
+			setIsLoading(false);
+		}
+	}, []);
+
+	const updateEvent = useCallback(async (props: ICreateUpdateEventProps) => {
+		const { formValues, _id = '' } = props;
+
+		setIsLoading(true);
+		setError(null);
+
+		try {
+			const response = await axiosInstance.put<TCreateUpdateEventResponse>(
+				`/calendars/events/${_id}`,
+				formValues,
+			);
+
+			const updatedEvent = response.data.data;
+
+			return updatedEvent;
+		} catch (error) {
+			const errorMessage =
+				getApiResponseErrorMessage(error) ||
+				'Произошла неизвестная ошибка при редактировании заметки';
 
 			setError(errorMessage);
 
@@ -47,5 +75,6 @@ export const useCreateUpdateEvent = () => {
 		isLoading,
 		error,
 		createEvent,
+		updateEvent,
 	};
 };
