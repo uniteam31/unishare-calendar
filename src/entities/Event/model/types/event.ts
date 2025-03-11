@@ -11,15 +11,15 @@ interface EventBase {
 	allDay?: boolean;
 }
 
-/** Экземпляр повторяющегося события (каждую неделю) */
-interface EventRecur {
-	startRecur?: TimeString;
-	endRecur?: TimeString;
-	daysOfWeek?: number[];
-}
+/** Экземпляр повторяющегося события */
+// interface EventRecur {
+// 	startRecur?: TimeString;
+// 	endRecur?: TimeString;
+// 	daysOfWeek?: number[];
+// }
 
 /** Экземпляр данных для формы события */
-export interface TEventFormFields extends EventBase, EventRecur {}
+export interface TEventFormFields extends EventBase {}
 
 /** Целый экземпляр */
 export interface IEvent extends TEventFormFields, TMeta {}

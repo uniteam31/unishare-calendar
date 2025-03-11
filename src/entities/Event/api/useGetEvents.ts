@@ -1,19 +1,21 @@
 import useSWR from 'swr';
-// import axiosInstance from 'shared/api/axiosInstance';
+import { axiosInstance } from 'shared/api';
+import { ApiResponse } from 'shared/types';
 import { IEvent } from '../model/types/event';
 
 export const useGetEvents = () => {
-	const fetcher = () => mock;
-	// axiosInstance<IEvent[]>({ method: 'GET', url: `${__API_URL__}/events` }).then(
-	// 	(res) => res.data,
-	// );
+	const fetcher = () =>
+	axiosInstance<ApiResponse<IEvent[]>>({ method: 'GET', url: `${__API_URL__}/calendars/events` }).then(
+		(res) => res.data.data,
+	);
 
 	const { data, error, isValidating, mutate } = useSWR('api/events', fetcher);
 
 	const events = data || [];
+	console.log(events);
 
 	return {
-		mutateNodes: mutate,
+		mutateEvents: mutate,
 		events,
 		error,
 		isLoading: isValidating,

@@ -1,3 +1,4 @@
+import { EventModal } from 'feature/CreateUpdateEvent';
 import React, { useState } from 'react';
 import { MiniCalendar, FullCalendar } from 'widgets/Calendar';
 import { SpacesFilter } from 'widgets/SpacesFilter';
@@ -8,12 +9,13 @@ import s from './CalendarPage.module.scss';
 
 const CalendarPage = () => {
 	const [currentDate, setCurrentDate] = useState<Date>(new Date());
+	const [isEventModalOpen, setIsEventModalOpen] = useState(false);
 	const { events } = useGetEvents();
 
 	return (
 		<div className={s.CalendarPage}>
 			<div className={s.menu}>
-				<Button className={s.createButton}>
+				<Button className={s.createButton} onClick={() => setIsEventModalOpen(true)}>
 					Новое событие
 				</Button>
 
@@ -39,6 +41,10 @@ const CalendarPage = () => {
 					events={events}
 				/>
 			</div>
+
+			{isEventModalOpen && (
+				<EventModal isOpen={isEventModalOpen} onClose={() => setIsEventModalOpen(false)} />
+			)}
 		</div>
 	);
 };

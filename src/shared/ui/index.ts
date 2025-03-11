@@ -18,6 +18,8 @@ export {
 	//
 	Input,
 	//
+	TextArea,
+	//
 	LoadScreen,
 	//
 	Warning,
@@ -28,3 +30,4 @@ export {
 	//
 	Widget,
 } from '@uniteam31/uni-shared-ui';
+export { BaseFormModal } from './BaseFormModal';
