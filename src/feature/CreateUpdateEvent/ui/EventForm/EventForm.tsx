@@ -5,7 +5,7 @@ import { useController, useFormContext } from 'react-hook-form';
 import { IEvent, useEventStore, useGetEvents } from 'entities/Event';
 import type { TEventFormFields } from 'entities/Event';
 import { Input, BaseFormModal } from 'shared/ui';
-import { useCreateUpdateEvent } from '../../api/useCreateUpdateEvent';
+import { useEventApi } from '../../api/useEventApi';
 import s from './EventForm.module.scss';
 
 interface IProps {
@@ -25,7 +25,7 @@ export const EventForm = ({ onClose }: IProps) => {
 		updateEvent,
 		isLoading: isEventFormLoading,
 		error: eventFormErrors,
-	} = useCreateUpdateEvent();
+	} = useEventApi();
 	const { selectedEvent } = useEventStore();
 	const { events, mutateEvents } = useGetEvents();
 

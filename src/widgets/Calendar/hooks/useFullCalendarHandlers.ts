@@ -1,5 +1,5 @@
 import { EventChangeArg, DateSelectArg, EventClickArg, DatesSetArg } from '@fullcalendar/core';
-import { useCreateUpdateEvent } from 'feature/CreateUpdateEvent/api/useCreateUpdateEvent';
+import { useEventApi } from 'feature/CreateUpdateEvent/api/useEventApi';
 import { IEvent, useEventStore, useGetEvents } from 'entities/Event';
 
 interface IProps {
@@ -11,7 +11,7 @@ interface IProps {
 export const useFullCalendarHandlers = (props: IProps) => {
 	const { currentDate, setCurrentDate } = props;
 
-	const { updateEvent } = useCreateUpdateEvent();
+	const { updateEvent } = useEventApi();
 	const { events, mutateEvents } = useGetEvents();
 	const { setSelectedEvent } = useEventStore();
 

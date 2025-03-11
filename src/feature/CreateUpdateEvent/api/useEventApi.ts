@@ -4,25 +4,35 @@ import { axiosInstance } from 'shared/api';
 import { getApiResponseErrorMessage } from 'shared/lib';
 import type { ApiResponse } from 'shared/types';
 
-interface ICreateUpdateEventProps {
+
+interface ICreateEventProps {
 	formValues: Partial<TEventFormFields>;
 	_id?: number;
 }
 
-type TCreateUpdateEventResponse = ApiResponse<IEvent>;
+interface IUpdateEventProps {
+	formValues: Partial<TEventFormFields>;
+	_id?: number;
+}
 
-export const useCreateUpdateEvent = () => {
+interface IDeleteEventProps {
+	_id?: number;
+}
+
+type TApiEventResponse = ApiResponse<IEvent>;
+
+export const useEventApi = () => {
 	const [isLoading, setIsLoading] = useState<boolean>(false);
 	const [error, setError] = useState<null | string>();
 
-	const createEvent = useCallback(async (props: ICreateUpdateEventProps) => {
+	const createEvent = useCallback(async (props: ICreateEventProps) => {
 		const { formValues } = props;
 
 		setIsLoading(true);
 		setError(null);
 
 		try {
-			const response = await axiosInstance.post<TCreateUpdateEventResponse>(
+			const response = await axiosInstance.post<TApiEventResponse>(
 				'/calendars/events',
 				formValues,
 			);
@@ -43,14 +53,14 @@ export const useCreateUpdateEvent = () => {
 		}
 	}, []);
 
-	const updateEvent = useCallback(async (props: ICreateUpdateEventProps) => {
+	const updateEvent = useCallback(async (props: IUpdateEventProps) => {
 		const { formValues, _id = '' } = props;
 
 		setIsLoading(true);
 		setError(null);
 
 		try {
-			const response = await axiosInstance.put<TCreateUpdateEventResponse>(
+			const response = await axiosInstance.put<TApiEventResponse>(
 				`/calendars/events/${_id}`,
 				formValues,
 			);
@@ -71,10 +81,38 @@ export const useCreateUpdateEvent = () => {
 		}
 	}, []);
 
+	const deleteEvent = useCallback(async (props: IDeleteEventProps) => {
+		const { _id = '' } = props;
+
+		setIsLoading(true);
+		setError(null);
+
+		try {
+			const response = await axiosInstance.delete<TApiEventResponse>(
+				`/calendars/events/${_id}`,
+			);
+
+			const deletedEvent = response.data.data;
+
+			return deletedEvent;
+		} catch (error) {
+			const errorMessage =
+				getApiResponseErrorMessage(error) ||
+				'Произошла неизвестная ошибка при удалении заметки';
+
+			setError(errorMessage);
+
+			throw new Error(errorMessage);
+		} finally {
+			setIsLoading(false);
+		}
+	}, []);
+
 	return {
 		isLoading,
 		error,
 		createEvent,
 		updateEvent,
+		deleteEvent,
 	};
 };
