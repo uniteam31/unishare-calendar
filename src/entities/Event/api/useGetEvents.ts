@@ -1,7 +1,7 @@
 import useSWR from 'swr';
 import { axiosInstance } from 'shared/api';
-import { ApiResponse } from 'shared/types';
-import { IEvent } from '../model/types/event';
+import type { ApiResponse } from 'shared/types';
+import type { IEvent } from '../model/types/event';
 
 export const useGetEvents = () => {
 	const fetcher = () =>

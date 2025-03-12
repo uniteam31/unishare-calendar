@@ -1,4 +1,4 @@
-import { IEvent } from '../model/types/event';
+import type { IEvent } from '../model/types/event';
 
 export const mapEventToFullCalendarEvent = (event: IEvent) => ({
 	start: event.startTime,

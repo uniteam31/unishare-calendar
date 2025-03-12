@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { IEvent } from '../types/event';
+import type { IEvent } from '../types/event';
 
 interface IEventStore {
 	selectedEvent: IEvent | null;

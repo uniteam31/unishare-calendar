@@ -1,6 +1,7 @@
-import { EventChangeArg, DateSelectArg, EventClickArg, DatesSetArg } from '@fullcalendar/core';
+import type { EventChangeArg, DateSelectArg, EventClickArg, DatesSetArg } from '@fullcalendar/core';
 import { useEventApi } from 'feature/CreateUpdateEvent/api/useEventApi';
-import { IEvent, useEventStore, useGetEvents } from 'entities/Event';
+import { useEventStore, useGetEvents } from 'entities/Event';
+import type { IEvent } from 'entities/Event';
 
 interface IProps {
 	currentDate: Date;

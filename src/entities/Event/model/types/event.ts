@@ -1,4 +1,4 @@
-import { TMeta } from 'shared/types';
+import type { TMeta } from 'shared/types';
 
 type TimeString = string;
 

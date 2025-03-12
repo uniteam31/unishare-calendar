@@ -1,13 +1,13 @@
 import { useCallback, useState } from 'react';
-import { TEventFormFields, IEvent } from 'entities/Event';
+import type { TEventFormFields, IEvent } from 'entities/Event';
 import { axiosInstance } from 'shared/api';
 import { getApiResponseErrorMessage } from 'shared/lib';
-import type { ApiResponse } from 'shared/types';
+import type { ApiResponse, TMeta } from 'shared/types';
 
 
 interface ICreateEventProps {
 	formValues: Partial<TEventFormFields>;
-	_id?: number;
+	_id?: TMeta['_id'];
 }
 
 interface IUpdateEventProps {

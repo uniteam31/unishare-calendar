@@ -7,15 +7,16 @@ import { Button } from 'shared/ui';
 import { Divider } from 'shared/ui';
 import s from './CalendarPage.module.scss';
 
-const CalendarPage = () => {
+export const CalendarPage = () => {
 	const [currentDate, setCurrentDate] = useState<Date>(new Date());
 	const [isEventModalOpen, setIsEventModalOpen] = useState(false);
 	const { events } = useGetEvents();
 	const { selectedEvent, setSelectedEvent } = useEventStore();
 
 	useEffect(() => {
-		if (selectedEvent)
+		if (selectedEvent) {
 			setIsEventModalOpen(true);
+		}
 	}, [selectedEvent]);
 
 	const handleClickNewEvent = () => {
@@ -35,20 +36,14 @@ const CalendarPage = () => {
 					Новое событие
 				</Button>
 
-				<MiniCalendar
-					currentDate={currentDate}
-					setCurrentDate={setCurrentDate}
-				/>
+				<MiniCalendar currentDate={currentDate} setCurrentDate={setCurrentDate} />
 
-				<div>
-					Пространства
-				</div>
+				<div> Пространства </div>
 
 				<SpacesFilter />
-
 			</div>
 
-			<Divider/>
+			<Divider />
 
 			<div className={s.calendar}>
 				<FullCalendar
@@ -64,5 +59,3 @@ const CalendarPage = () => {
 		</div>
 	);
 };
-
-export default CalendarPage;

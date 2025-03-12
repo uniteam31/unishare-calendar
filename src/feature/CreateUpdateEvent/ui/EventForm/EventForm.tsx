@@ -1,9 +1,9 @@
-import { TextArea } from '@uniteam31/uni-shared-ui';
 import { DatePicker } from 'antd';
 import dayjs from 'dayjs';
 import { useController, useFormContext } from 'react-hook-form';
-import { IEvent, useEventStore, useGetEvents } from 'entities/Event';
-import type { TEventFormFields } from 'entities/Event';
+import { useEventStore, useGetEvents } from 'entities/Event';
+import type { IEvent, TEventFormFields } from 'entities/Event';
+import { TextArea } from 'shared/ui';
 import { Input, BaseFormModal } from 'shared/ui';
 import { useEventApi } from '../../api/useEventApi';
 import s from './EventForm.module.scss';
