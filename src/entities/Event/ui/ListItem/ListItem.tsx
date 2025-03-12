@@ -1,8 +1,8 @@
 import classNames from 'classnames';
 import React, { FC, memo, useCallback } from 'react';
-import { formatTime } from 'shared/lib/formatDateTime/formatTime';
-import { formatTimeInterval } from 'shared/lib/formatDateTime/formatTimeInterval';
-import { IEvent } from '../../model/types/event';
+import { formatTime } from 'shared/lib';
+import { formatTimeInterval } from 'shared/lib';
+import type { IEvent } from '../../model/types/event';
 import s from './ListItem.module.scss';
 
 interface IListItemProps extends Partial<IEvent> {

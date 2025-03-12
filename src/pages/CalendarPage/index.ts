@@ -1,1 +1,1 @@
-export { CalendarPageAsync as CalendarPage } from './ui/CalendarPage/CalendarPage.async';
+export { CalendarPage } from './ui/CalendarPage';

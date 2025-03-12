@@ -14,3 +14,5 @@ export const Event: TEventComponents = {
 export { useEventStore } from './model/slice/useEventStore';
 
 export { useGetEvents } from './api/useGetEvents';
+
+export { mapEventToFullCalendarEvent } from './lib/mapEventToFullCalendarEvent';
