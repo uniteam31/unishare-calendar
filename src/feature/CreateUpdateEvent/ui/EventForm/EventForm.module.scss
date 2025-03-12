@@ -1,6 +1,30 @@
+.wrapper {
+	width: 380px;
+	display: flex;
+	flex-direction: column;
+	gap: 20px;
+}
+
 .input {
 	height: 50px;
-	margin-bottom: 20px;
 	width: 100%;
 	border-color: #000000;
+}
+
+.numberInput {
+	margin: 0 10px;
+	width: 60px;
+}
+
+.periodSelect {
+	width: 120px;
+}
+
+.daysContainer {
+	display: flex;
+	gap: 6px;
+}
+
+.dayButton {
+	width: 45px;
 }

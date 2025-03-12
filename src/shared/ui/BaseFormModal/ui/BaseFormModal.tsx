@@ -1,3 +1,4 @@
+import classNames from 'classnames';
 import type { PropsWithChildren } from 'react';
 import { formatApiErrorMessages } from '../../../lib';
 import { Button, Text, TextAlign, Warning } from '../../../ui';
@@ -6,6 +7,8 @@ import s from './BaseFormModal.module.scss';
 type TMode = 'create' | 'edit';
 
 type Props = {
+	className?: string;
+	//
 	title: string;
 	text?: string;
 	//
@@ -19,14 +22,14 @@ type Props = {
 };
 
 export const BaseFormModal = (props: PropsWithChildren<Props>) => {
-	const { title, text, onSubmit, onReset, isDirty, errors, isLoading, children, mode } = props;
+	const { className, title, text, onSubmit, onReset, isDirty, errors, isLoading, children, mode } = props;
 
 	const handleReset = () => {
 		onReset?.();
 	};
 
 	return (
-		<form className={s.UpdateFormModal} onSubmit={onSubmit}>
+		<form className={classNames(s.UpdateFormModal, className)} onSubmit={onSubmit}>
 			<div>
 				<Text className={s.title} title={title} text={text} align={TextAlign.CENTER} />
 
@@ -38,10 +41,10 @@ export const BaseFormModal = (props: PropsWithChildren<Props>) => {
 						theme={'red'}
 					/>
 				)}
-
-				{/** Тело формы */}
-				{children}
 			</div>
+
+			{/** Тело формы */}
+			{children}
 
 			<div className={s.buttonsWrapper}>
 				<Button className={s.submitButton} disabled={!isDirty || isLoading}>

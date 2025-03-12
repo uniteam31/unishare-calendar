@@ -2,6 +2,8 @@ import type { TMeta } from 'shared/types';
 
 type TimeString = string;
 
+type TPeriod = 'day' | 'week' | 'month' | 'year';
+
 /** Экземпляр обычного события в календаре */
 interface EventBase {
 	title: string;
@@ -12,14 +14,14 @@ interface EventBase {
 }
 
 /** Экземпляр повторяющегося события */
-// interface EventRecur {
-// 	startRecur?: TimeString;
-// 	endRecur?: TimeString;
-// 	daysOfWeek?: number[];
-// }
+interface EventRecursive {
+	interval?: number;
+	period?: TPeriod;
+	days?: number[];
+}
 
 /** Экземпляр данных для формы события */
-export interface TEventFormFields extends EventBase {}
+export interface TEventFormFields extends EventBase, EventRecursive {}
 
 /** Целый экземпляр */
 export interface IEvent extends TEventFormFields, TMeta {}

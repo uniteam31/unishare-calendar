@@ -1,12 +1,18 @@
-import { DatePicker } from 'antd';
+import { DatePicker, Select, InputNumber, Button } from 'antd';
+import locale from 'antd/lib/date-picker/locale/ru_RU';
 import dayjs from 'dayjs';
+import { useState } from 'react';
 import { useController, useFormContext } from 'react-hook-form';
 import { useEventStore, useGetEvents } from 'entities/Event';
 import type { IEvent, TEventFormFields } from 'entities/Event';
 import { TextArea } from 'shared/ui';
-import { Input, BaseFormModal } from 'shared/ui';
+import { Input, CheckboxItem, BaseFormModal } from 'shared/ui';
 import { useEventApi } from '../../api/useEventApi';
 import s from './EventForm.module.scss';
+
+const { Option } = Select;
+
+const daysOfWeek = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'];
 
 interface IProps {
 	onClose?: () => void;
@@ -29,6 +35,10 @@ export const EventForm = ({ onClose }: IProps) => {
 	const { selectedEvent } = useEventStore();
 	const { events, mutateEvents } = useGetEvents();
 
+	const [isRecursiveEvent, setIsRecursiveEvent] = useState(Boolean(selectedEvent?.period));
+
+	// Form fields
+
 	const {
 		field: { value: title, onChange: onChangeTitle },
 	} = useController({ control, name: 'title', defaultValue: selectedEvent?.title });
@@ -42,8 +52,30 @@ export const EventForm = ({ onClose }: IProps) => {
 	} = useController({ control, name: 'endTime', defaultValue: selectedEvent?.endTime });
 
 	const {
+		field: { value: interval, onChange: onChangeInterval },
+	} = useController({ control, name: 'interval', defaultValue: selectedEvent?.interval ?? 1 });
+
+	const {
+		field: { value: period, onChange: onChangePeriod },
+	} = useController({ control, name: 'period', defaultValue: selectedEvent?.period ?? 'day' });
+
+	const {
+		field: { value: days, onChange: onChangeDays },
+	} = useController({ control, name: 'days', defaultValue: selectedEvent?.days ?? [] });
+
+	const {
 		field: { value: description, onChange: onChangeDescription },
 	} = useController({ control, name: 'description', defaultValue: selectedEvent?.description });
+
+	const handleDayClick = (dayNumber: number) => {
+		if (!days) return;
+
+		if (days.includes(dayNumber)) {
+			onChangeDays(days.filter((day) => day !== dayNumber));
+		} else {
+			onChangeDays([...days, dayNumber]);
+		}
+	};
 
 	const updateCachedEvents = (newEvent: IEvent) => {
 		const updatedEvents = events.filter((e) => e._id !== newEvent?._id );
@@ -54,6 +86,15 @@ export const EventForm = ({ onClose }: IProps) => {
 
 	const handleSubmit = () => {
 		const formValues = getValues();
+
+		// Если флаг повторения не проставлен, то удаляем из значений данные о повторении
+		if (!isRecursiveEvent) {
+			formValues.interval = undefined;
+			formValues.period = undefined;
+			formValues.days = undefined;
+		} else if (period !== 'week')  {
+			formValues.days = undefined;
+		}
 
 		if (selectedEvent) {
 			updateEvent({ formValues, _id: selectedEvent._id }).then((result) =>  {
@@ -70,6 +111,8 @@ export const EventForm = ({ onClose }: IProps) => {
 
 	return (
 		<BaseFormModal
+			className={s.wrapper}
+			//
 			title={selectedEvent ? 'Изменить событие' : 'Новое событие'}
 			//
 			isLoading={isEventFormLoading}
@@ -78,16 +121,12 @@ export const EventForm = ({ onClose }: IProps) => {
 			//
 			onSubmit={handleSubmitContext(handleSubmit)}
 		>
-			<Input
-				className={s.input}
-				label={'Заголовок'}
-				value={title}
-				onChange={onChangeTitle}
-			/>
+			<Input className={s.input} label="Заголовок" value={title} onChange={onChangeTitle} />
 
 			<DatePicker
 				className={s.input}
-				placeholder={'Время начала'}
+				locale={locale}
+				placeholder="Время начала"
 				showTime={{ format: 'HH:mm' }}
 				format="DD.MM.YYYY HH:mm"
 				onChange={onChangeStartTime}
@@ -97,7 +136,8 @@ export const EventForm = ({ onClose }: IProps) => {
 
 			<DatePicker
 				className={s.input}
-				placeholder={'Время конца'}
+				locale={locale}
+				placeholder="Время конца"
 				showTime={{ format: 'HH:mm' }}
 				format="DD.MM.YYYY HH:mm"
 				onChange={onChangeEndTime}
@@ -105,9 +145,55 @@ export const EventForm = ({ onClose }: IProps) => {
 				value={endTime && dayjs(endTime)}
 			/>
 
+			<CheckboxItem
+				className={s.checkbox}
+				title="Повторяющееся событие"
+				checked={isRecursiveEvent}
+				onChange={setIsRecursiveEvent}
+			/>
+
+			{isRecursiveEvent && (
+				<div>
+					Повторять { period === 'week' ? 'каждую' : 'каждый'}
+
+					<InputNumber
+						className={s.numberInput}
+						value={interval}
+						onChange={(num) => onChangeInterval(Math.floor(num ?? 1))}
+						min={1} max={400}
+					/>
+
+					<Select
+						className={s.periodSelect}
+						defaultValue={period}
+						onChange={onChangePeriod}
+					>
+						<Option value="day"> День </Option>
+						<Option value="week"> Неделю </Option>
+						<Option value="month"> Месяц </Option>
+						<Option value="year"> Год </Option>
+					</Select>
+				</div>
+			)}
+
+			{isRecursiveEvent && period === 'week' && (
+				<div className={s.daysContainer}>
+					{daysOfWeek.map((day, number) => (
+						<Button
+							key={number}
+							className={s.dayButton}
+							onClick={() => handleDayClick(number)}
+							type={days?.includes(number) ? 'primary' : 'default'}
+						>
+							{day}
+						</Button>
+					))}
+				</div>
+			)}
+
 			<TextArea
 				className={s.input}
-				label={'Описание'}
+				label="Описание"
 				value={description}
 				onChange={onChangeDescription}
 			/>
