@@ -1,0 +1,25 @@
+.CalendarPage {
+    align-items: stretch;
+    background-color: #fff;
+    display: flex;
+    height: 100%;
+    overflow: hidden;
+    width: 100%;
+
+    .menu {
+        display: flex;
+        flex-flow: column;
+        gap: 20px;
+        padding: 20px;
+        width: 360px;
+    }
+
+    .createButton {
+        width: 100%;
+    }
+
+    .calendar {
+        padding: 20px;
+        flex: 1;
+    }
+}
