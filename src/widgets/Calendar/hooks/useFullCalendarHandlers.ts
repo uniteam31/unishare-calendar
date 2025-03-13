@@ -7,10 +7,14 @@ interface IProps {
 	currentDate: Date;
 	// eslint-disable-next-line no-unused-vars
 	setCurrentDate: (newDate: Date) => void;
+	// eslint-disable-next-line no-unused-vars
+	setIntervalStart: (interval: Date) => void;
+	// eslint-disable-next-line no-unused-vars
+	setIntervalEnd: (interval: Date) => void;
 }
 
 export const useFullCalendarHandlers = (props: IProps) => {
-	const { currentDate, setCurrentDate } = props;
+	const { currentDate, setCurrentDate, setIntervalStart, setIntervalEnd } = props;
 
 	const { updateEvent } = useEventApi();
 	const { events, mutateEvents } = useGetEvents();
@@ -39,6 +43,9 @@ export const useFullCalendarHandlers = (props: IProps) => {
 	};
 
 	const handleDatesSet = (arg: DatesSetArg) => {
+		setIntervalStart(arg.view.activeStart);
+		setIntervalEnd(arg.view.activeEnd);
+
 		const newDate = arg.view.currentStart;
 		switch (arg.view.type) {
 			case 'dayGridMonth':

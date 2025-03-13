@@ -89,11 +89,11 @@ export const EventForm = ({ onClose }: IProps) => {
 
 		// Если флаг повторения не проставлен, то удаляем из значений данные о повторении
 		if (!isRecursiveEvent) {
-			formValues.interval = undefined;
-			formValues.period = undefined;
-			formValues.days = undefined;
+			formValues.interval = null;
+			formValues.period = null;
+			formValues.days = [];
 		} else if (period !== 'week')  {
-			formValues.days = undefined;
+			formValues.days = [];
 		}
 
 		if (selectedEvent) {
@@ -149,7 +149,10 @@ export const EventForm = ({ onClose }: IProps) => {
 				className={s.checkbox}
 				title="Повторяющееся событие"
 				checked={isRecursiveEvent}
-				onChange={setIsRecursiveEvent}
+				onChange={(checked) => {
+					setIsRecursiveEvent(checked);
+					onChangeDays(days);
+				}}
 			/>
 
 			{isRecursiveEvent && (

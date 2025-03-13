@@ -55,6 +55,8 @@ export const useEventApi = () => {
 	const updateEvent = useCallback(async (props: IUpdateEventProps) => {
 		const { formValues, _id = '' } = props;
 
+		console.log(formValues);
+
 		setIsLoading(true);
 		setError(null);
 

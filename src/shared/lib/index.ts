@@ -6,3 +6,4 @@ export {
 
 export { formatTime } from './formatDateTime/formatTime';
 export { formatTimeInterval } from './formatDateTime/formatTimeInterval';
+export * from './formatDateTime/constants';

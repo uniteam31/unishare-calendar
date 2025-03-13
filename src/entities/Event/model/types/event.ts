@@ -9,14 +9,14 @@ interface EventBase {
 	title: string;
 	description?: string;
 	startTime: TimeString;
-	endTime?: TimeString;
+	endTime: TimeString;
 	allDay?: boolean;
 }
 
 /** Экземпляр повторяющегося события */
 interface EventRecursive {
-	interval?: number;
-	period?: TPeriod;
+	interval?: number | null;
+	period?: TPeriod | null;
 	days?: number[];
 }
 
@@ -25,3 +25,11 @@ export interface TEventFormFields extends EventBase, EventRecursive {}
 
 /** Целый экземпляр */
 export interface IEvent extends TEventFormFields, TMeta {}
+
+export interface ICalendarEvent {
+	start: TimeString;
+	end: TimeString;
+	title: string;
+	allDay?: boolean;
+	eventData: IEvent;
+}
