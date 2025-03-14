@@ -1,10 +1,13 @@
 import classNames from 'classnames';
-import React, { useCallback } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { type IEvent, Event, useGetEvents, useEventStore } from 'entities/Event';
 import CalendarIcon from 'shared/assets/icons/calendar.svg';
-import { Link, Widget } from 'shared/ui';
+import { isSameDate } from 'shared/lib';
+import { Link, Warning, Widget } from 'shared/ui';
 import { Skeleton } from 'shared/ui';
 import s from './CalendarWidget.module.scss';
+
+const TODAY = new Date();
 
 interface INoteWidgetProps {
 	className?: string;
@@ -29,6 +32,13 @@ export const CalendarWidget = (props: INoteWidgetProps) => {
 		[events, setSelectedEvent],
 	);
 
+	const todayEvents = useMemo(() => {
+		const now = new Date();
+		return events.filter(event =>
+			isSameDate(event.startTime, now) && new Date(event.startTime).getTime() > now.getTime()
+		);
+	}, [events]);
+
 	return (
 		<div className={classNames(s.CalendarWidget, className)}>
 			<Widget Icon={<CalendarIcon className={s.icon} />} title={'Календарь'} to={'/calendar'}>
@@ -39,7 +49,7 @@ export const CalendarWidget = (props: INoteWidgetProps) => {
 						))}
 
 					{!isLoading &&
-						events.slice(0, 2).map((event) => (
+						todayEvents.slice(0, 2).map((event) => (
 							<Link to={'/calendar'} key={event._id}>
 								<Event.ListItem
 									className={s.event}
@@ -48,6 +58,14 @@ export const CalendarWidget = (props: INoteWidgetProps) => {
 								/>
 							</Link>
 						))}
+
+					{!isLoading &&
+						!todayEvents.length && (
+							<Warning
+								title={'На сегодня событий больше нет'}
+								theme={'blue'}
+							/>
+						)}
 				</div>
 			</Widget>
 		</div>

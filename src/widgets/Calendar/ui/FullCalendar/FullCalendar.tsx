@@ -3,8 +3,8 @@ import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import FullCalendar from '@fullcalendar/react';
 import timeGridPlugin from '@fullcalendar/timegrid';
-import React, { useEffect, useRef } from 'react';
-import { type IEvent, mapEventToFullCalendarEvent } from 'entities/Event';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { type IEvent, mapEventToFullCalendarEvent, createRecursiveEvent } from 'entities/Event';
 import { useFullCalendarHandlers } from '../../hooks/useFullCalendarHandlers';
 import './calendar.scss';
 
@@ -17,12 +17,18 @@ interface ICalendarProps {
 
 export const Calendar = (props: ICalendarProps) => {
 	const { currentDate, events } = props;
+	const [intervalStart, setIntervalStart] = useState<Date>(new Date());
+	const [intervalEnd, setIntervalEnd] = useState<Date>(new Date());
 	const {
 		handleEventChange,
 		handleEventClick,
 		handleSelect,
 		handleDatesSet
-	} = useFullCalendarHandlers(props);
+	} = useFullCalendarHandlers({
+		...props,
+		setIntervalStart,
+		setIntervalEnd,
+	});
 	const calendarRef = useRef<FullCalendar>(null);
 
 	useEffect(() => {
@@ -32,14 +38,20 @@ export const Calendar = (props: ICalendarProps) => {
 		}
 	}, [currentDate]);
 
-	const calendarEvents = events.map(mapEventToFullCalendarEvent);
+	const calendarEvents = useMemo(() => {
+		return events.filter(e => !e.period).map(mapEventToFullCalendarEvent);
+	}, [events]);
+
+	const recursiveEvents = useMemo(() => {
+		return createRecursiveEvent({ events, intervalStart, intervalEnd });
+	}, [events, intervalStart, intervalEnd]);
 
 	return (
 		<FullCalendar
 			ref={calendarRef}
 			plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin ]}
 			initialView={'dayGridMonth'}
-			scrollTime="09:00:00"
+			scrollTime="06:00:00"
 			themeSystem="yeti"
 			headerToolbar={{
 				left: 'prev,today,next',
@@ -54,7 +66,7 @@ export const Calendar = (props: ICalendarProps) => {
 			droppable={true}
 			firstDay={1}
 			locale={ruLocale}
-			events={calendarEvents}
+			events={[...calendarEvents, ...recursiveEvents]}
 			eventClick={handleEventClick}
 			eventDrop={handleEventChange}
 			eventResize={handleEventChange}

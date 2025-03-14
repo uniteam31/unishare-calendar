@@ -28,6 +28,18 @@
 		}
 	}
 
+	.removeButton {
+		height: 40px;
+		width: 100%;
+		background-color: var(--red-color);
+		color: #fff;
+
+		&:disabled {
+			background-color: var(--mid-gray-bg-color);
+			color: #fff;
+		}
+	}
+
 	.error {
 		margin-bottom: var(--medium-indent);
 	}

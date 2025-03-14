@@ -6,17 +6,16 @@ import type { ApiResponse, TMeta } from 'shared/types';
 
 
 interface ICreateEventProps {
-	formValues: Partial<TEventFormFields>;
-	_id?: TMeta['_id'];
+	formValues: TEventFormFields;
 }
 
 interface IUpdateEventProps {
-	formValues: Partial<TEventFormFields>;
-	_id?: number;
+	formValues: TEventFormFields;
+	_id: TMeta['_id'];
 }
 
 interface IDeleteEventProps {
-	_id?: number;
+	_id: TMeta['_id'];
 }
 
 type TApiEventResponse = ApiResponse<IEvent>;
