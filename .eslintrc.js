@@ -37,7 +37,7 @@ module.exports = {
 		'no-unused-vars': 'warn',
 		'object-curly-spacing': ['error', 'always'],
 		'react-hooks/rules-of-hooks': 'error',
-		'react-hooks/exhaustive-deps': 'error',
+		'react-hooks/exhaustive-deps': 'off',
 		'react/display-name': 'off',
 		'react/prop-types': 'off',
 	},

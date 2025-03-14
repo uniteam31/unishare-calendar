@@ -4,12 +4,15 @@ import { ICalendarEvent, IEvent } from '../model/types/event';
 
 interface IProps {
 	events: IEvent[];
-	intervalStart: Date;
-	intervalEnd: Date;
+	interval: {
+		start: Date;
+		end: Date;
+	};
 }
 
 export const createRecursiveEvent = (props: IProps) => {
-	const { events, intervalStart, intervalEnd } = props;
+	const { events, interval } = props;
+	const { start: intervalStart, end: intervalEnd } = interval;
 
 	let result: ICalendarEvent[] = [];
 

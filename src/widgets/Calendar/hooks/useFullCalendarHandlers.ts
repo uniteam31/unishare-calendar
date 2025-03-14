@@ -1,24 +1,38 @@
 import type { EventChangeArg, DateSelectArg, EventClickArg, DatesSetArg } from '@fullcalendar/core';
+import FullCalendar from '@fullcalendar/react';
 import { useEventApi } from 'feature/CreateUpdateEvent/api/useEventApi';
+import { RefObject, useEffect } from 'react';
 import { useEventStore, useGetEvents } from 'entities/Event';
 import type { IEvent } from 'entities/Event';
+
+type TInterval = {
+	start: Date;
+	end: Date;
+}
 
 interface IProps {
 	currentDate: Date;
 	// eslint-disable-next-line no-unused-vars
 	setCurrentDate: (newDate: Date) => void;
 	// eslint-disable-next-line no-unused-vars
-	setIntervalStart: (interval: Date) => void;
-	// eslint-disable-next-line no-unused-vars
-	setIntervalEnd: (interval: Date) => void;
+	interval: TInterval;
+	setInterval: (arg: TInterval) => void;
+	calendarRef: RefObject<FullCalendar>;
 }
 
 export const useFullCalendarHandlers = (props: IProps) => {
-	const { currentDate, setCurrentDate, setIntervalStart, setIntervalEnd } = props;
+	const { currentDate, setCurrentDate, interval, setInterval, calendarRef } = props;
 
 	const { updateEvent } = useEventApi();
 	const { events, mutateEvents } = useGetEvents();
 	const { setSelectedEvent } = useEventStore();
+
+	useEffect(() => {
+		if (calendarRef.current) {
+			const calendarApi = calendarRef.current.getApi();
+			calendarApi.gotoDate(currentDate);
+		}
+	}, [calendarRef, currentDate]);
 
 	const updateCachedEvents = (newEvent: IEvent) => {
 		const updatedEvents = events.filter((e) => e._id !== newEvent?._id );
@@ -43,13 +57,19 @@ export const useFullCalendarHandlers = (props: IProps) => {
 	};
 
 	const handleDatesSet = (arg: DatesSetArg) => {
-		// Если значение activeStart такое же, как у intervalStart, то произойдет лишний ререндеринг
-		// TODO добавить проверку на одинаковость этих значений
-		setIntervalStart(arg.view.activeStart);
-		setIntervalEnd(arg.view.activeEnd);
+		const { activeStart, activeEnd, currentStart, type } = arg.view;
 
-		const newDate = arg.view.currentStart;
-		switch (arg.view.type) {
+		if (activeStart.getTime() === interval.start.getTime() ||
+			activeEnd.getTime() === interval.end.getTime()) {
+			return;
+		}
+		setInterval({
+			start: activeStart,
+			end: activeEnd,
+		});
+
+		const newDate = currentStart;
+		switch (type) {
 			case 'dayGridMonth':
 				newDate.setDate(currentDate.getDate());
 				break;
@@ -60,6 +80,7 @@ export const useFullCalendarHandlers = (props: IProps) => {
 		}
 		if (newDate.getTime() === currentDate.getTime())
 			return;
+		
 		setCurrentDate(newDate);
 	};
 
@@ -68,8 +89,7 @@ export const useFullCalendarHandlers = (props: IProps) => {
 	};
 
 	const handleSelect = (info: DateSelectArg) => {
-		if (info.allDay)
-			return;
+		setCurrentDate(info.start);
 
 		setSelectedEvent({
 			_id: 0,

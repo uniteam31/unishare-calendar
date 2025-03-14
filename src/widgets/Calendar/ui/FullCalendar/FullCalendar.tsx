@@ -3,10 +3,16 @@ import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import FullCalendar from '@fullcalendar/react';
 import timeGridPlugin from '@fullcalendar/timegrid';
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useMemo, useRef, useState } from 'react';
 import { type IEvent, mapEventToFullCalendarEvent, createRecursiveEvent } from 'entities/Event';
 import { useFullCalendarHandlers } from '../../hooks/useFullCalendarHandlers';
 import './calendar.scss';
+
+
+type TInterval = {
+	start: Date;
+	end: Date;
+}
 
 interface ICalendarProps {
 	currentDate: Date;
@@ -16,35 +22,28 @@ interface ICalendarProps {
 }
 
 export const Calendar = (props: ICalendarProps) => {
-	const { currentDate, events } = props;
-	const [intervalStart, setIntervalStart] = useState<Date>(new Date());
-	const [intervalEnd, setIntervalEnd] = useState<Date>(new Date());
+	const { events } = props;
+
+	const calendarRef = useRef<FullCalendar>(null);
+	const [interval, setInterval] = useState<TInterval>({
+		start: new Date(),
+		end: new Date(),
+	});
+
 	const {
 		handleEventChange,
 		handleEventClick,
 		handleSelect,
 		handleDatesSet
-	} = useFullCalendarHandlers({
-		...props,
-		setIntervalStart,
-		setIntervalEnd,
-	});
-	const calendarRef = useRef<FullCalendar>(null);
-
-	useEffect(() => {
-		if (calendarRef.current) {
-			const calendarApi = calendarRef.current.getApi();
-			calendarApi.gotoDate(currentDate);
-		}
-	}, [currentDate]);
+	} = useFullCalendarHandlers({ ...props, interval, setInterval, calendarRef });
 
 	const calendarEvents = useMemo(() => {
 		return events.filter(e => !e.period).map(mapEventToFullCalendarEvent);
 	}, [events]);
 
 	const recursiveEvents = useMemo(() => {
-		return createRecursiveEvent({ events, intervalStart, intervalEnd });
-	}, [events, intervalStart, intervalEnd]);
+		return createRecursiveEvent({ events, interval });
+	}, [events, interval]);
 
 	return (
 		<FullCalendar
