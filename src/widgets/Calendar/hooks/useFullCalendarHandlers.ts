@@ -66,6 +66,9 @@ export const useFullCalendarHandlers = (props: IProps) => {
 	};
 
 	const handleSelect = (info: DateSelectArg) => {
+		if (info.allDay)
+			return;
+
 		setSelectedEvent({
 			_id: 0,
 			title: '',
