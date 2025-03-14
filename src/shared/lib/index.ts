@@ -6,4 +6,6 @@ export {
 
 export { formatTime } from './formatDateTime/formatTime';
 export { formatTimeInterval } from './formatDateTime/formatTimeInterval';
+export { fullMonthsBetween } from './formatDateTime/fullMonthsBetween';
+
 export * from './formatDateTime/constants';

@@ -96,7 +96,7 @@ export const EventForm = ({ onClose }: IProps) => {
 			formValues.days = [];
 		}
 
-		if (selectedEvent) {
+		if (selectedEvent?._id) {
 			updateEvent({ formValues, _id: selectedEvent._id }).then((result) =>  {
 				onClose?.();
 				updateCachedEvents(result);
@@ -113,7 +113,7 @@ export const EventForm = ({ onClose }: IProps) => {
 		<BaseFormModal
 			className={s.wrapper}
 			//
-			title={selectedEvent ? 'Изменить событие' : 'Новое событие'}
+			title={selectedEvent?._id ? 'Изменить событие' : 'Новое событие'}
 			//
 			isLoading={isEventFormLoading}
 			errors={eventFormErrors}

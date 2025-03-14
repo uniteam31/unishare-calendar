@@ -1,4 +1,4 @@
-import { DAY_MS, WEEK_MS } from 'shared/lib';
+import { DAY_MS, fullMonthsBetween, WEEK_MS } from 'shared/lib';
 import { IEvent } from '../model/types/event';
 
 const mapPeriodToTime = {
@@ -51,16 +51,46 @@ export const createRecursiveEventForInterval = (props: IProps) => {
 	}
 
 	if (period === 'month') {
-		// TBD
+		const eventDuration = new Date(endTime).getTime() - new Date(startTime).getTime();
+		const date = new Date(startTime).getDate();
+
+		for (let n = intervalStart.getMonth(); n <= intervalEnd.getMonth() + ((intervalEnd.getFullYear() - intervalStart.getFullYear()) * 12); n++) {
+			const eventStart = new Date(startTime);
+			eventStart.setFullYear(intervalStart.getFullYear());
+			eventStart.setMonth(n);
+
+			if (eventStart.getDate() !== date) {
+				eventStart.setDate(0);
+			}
+
+			const eventEnd = new Date(eventStart.getTime() + eventDuration);
+
+			const diff = fullMonthsBetween(startTime, eventStart);
+
+			if (
+				diff >= 0 &&
+				diff % interval === 0 &&
+				(eventStart.getTime() <= intervalEnd.getTime() && eventStart.getTime() >= intervalStart.getTime() ||
+					eventStart.getTime() <= intervalEnd.getTime() && eventStart.getTime() >= intervalStart.getTime())
+			) {
+				events.push({
+					...event,
+					startTime: eventStart.toISOString(),
+					endTime: eventEnd.toISOString(),
+				});
+			}
+		}
+
+		return events;
 	}
 
 	if (period === 'year') {
 		const eventStart = new Date(startTime);
-		const eventEnd = new Date(endTime);
+		const eventDuration = new Date(endTime).getTime() - eventStart.getTime();
 
 		for (let n = intervalStart.getFullYear(); n <= intervalEnd.getFullYear(); n++) {
 			eventStart.setFullYear(n);
-			eventEnd.setFullYear(n);
+			const eventEnd = new Date(eventStart.getTime() + eventDuration);
 
 			const diff = n - new Date(startTime).getFullYear();
 
