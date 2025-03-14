@@ -1,7 +1,7 @@
 import { DatePicker, Select, InputNumber, Button } from 'antd';
 import locale from 'antd/lib/date-picker/locale/ru_RU';
 import dayjs from 'dayjs';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useController, useFormContext } from 'react-hook-form';
 import { useEventStore, useGetEvents } from 'entities/Event';
 import type { IEvent, TEventFormFields } from 'entities/Event';
@@ -69,6 +69,11 @@ export const EventForm = ({ onClose }: IProps) => {
 	const {
 		field: { value: description, onChange: onChangeDescription },
 	} = useController({ control, name: 'description', defaultValue: selectedEvent?.description });
+
+	useEffect(() => {
+		const newDay = (new Date(startTime).getDay() + 6) % 7;
+		onChangeDays([...days?.filter(day => day !== newDay) ?? [], newDay]);
+	}, [startTime]);
 
 	const handleDayClick = (dayNumber: number) => {
 		if (!days) return;
