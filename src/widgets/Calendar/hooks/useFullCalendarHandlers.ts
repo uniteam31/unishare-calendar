@@ -43,6 +43,8 @@ export const useFullCalendarHandlers = (props: IProps) => {
 	};
 
 	const handleDatesSet = (arg: DatesSetArg) => {
+		// Если значение activeStart такое же, как у intervalStart, то произойдет лишний ререндеринг
+		// TODO добавить проверку на одинаковость этих значений
 		setIntervalStart(arg.view.activeStart);
 		setIntervalEnd(arg.view.activeEnd);
 

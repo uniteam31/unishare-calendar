@@ -26,6 +26,7 @@ export interface TEventFormFields extends EventBase, EventRecursive {}
 /** Целый экземпляр */
 export interface IEvent extends TEventFormFields, TMeta {}
 
+/** Тип для события FullCalendar */
 export interface ICalendarEvent {
 	start: TimeString;
 	end: TimeString;

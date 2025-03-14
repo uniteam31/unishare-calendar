@@ -4,7 +4,7 @@ import interactionPlugin from '@fullcalendar/interaction';
 import FullCalendar from '@fullcalendar/react';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { createRecursiveEvent, type IEvent, mapEventToFullCalendarEvent } from 'entities/Event';
+import { type IEvent, mapEventToFullCalendarEvent, createRecursiveEvent } from 'entities/Event';
 import { useFullCalendarHandlers } from '../../hooks/useFullCalendarHandlers';
 import './calendar.scss';
 

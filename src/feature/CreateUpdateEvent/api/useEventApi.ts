@@ -11,11 +11,11 @@ interface ICreateEventProps {
 
 interface IUpdateEventProps {
 	formValues: TEventFormFields;
-	_id?: TMeta['_id'];
+	_id: TMeta['_id'];
 }
 
 interface IDeleteEventProps {
-	_id?: TMeta['_id'];
+	_id: TMeta['_id'];
 }
 
 type TApiEventResponse = ApiResponse<IEvent>;

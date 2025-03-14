@@ -1,5 +1,5 @@
-import { DAY_MS, fullMonthsBetween, WEEK_MS } from 'shared/lib';
-import { IEvent } from '../model/types/event';
+import { fullMonthsBetween, DAY_MS, WEEK_MS } from 'shared/lib';
+import type { IEvent } from '../model/types/event';
 
 const mapPeriodToTime = {
 	'day': DAY_MS,
@@ -20,6 +20,8 @@ export const createRecursiveEventForInterval = (props: IProps) => {
 		return;
 
 	const events: IEvent[] = [];
+
+	// Повторяющееся событие с периодом в День или Неделю (без доп опций)
 
 	if (period === 'day' || period === 'week' && !days?.length) {
 		const actualPeriod = interval * mapPeriodToTime[period];
@@ -46,6 +48,8 @@ export const createRecursiveEventForInterval = (props: IProps) => {
 		return events;
 	}
 
+	// Повторяющееся событие с периодом в Неделю с уточнением дней недели
+
 	if (period === 'week' && days?.length) {
 		const eventStart = new Date(startTime);
 		eventStart.setDate(eventStart.getDate() - eventStart.getDay() + 1);
@@ -56,6 +60,8 @@ export const createRecursiveEventForInterval = (props: IProps) => {
 		const originalWeekStart = new Date(startTime);
 		originalWeekStart.setHours(0, 0, 0, 0);
 		originalWeekStart.setDate(originalWeekStart.getDate() - originalWeekStart.getDay() + 1);
+
+		// Если открыт Дневной вид календаря
 
 		if (intervalEnd.getTime() - intervalStart.getTime() === DAY_MS) {
 			const currentWeekStart = new Date(intervalStart);
@@ -75,7 +81,7 @@ export const createRecursiveEventForInterval = (props: IProps) => {
 			return [];
 		}
 
-		const events: IEvent[] = [];
+		// Для случаев вида календаря Недельного и Месячного
 
 		const diff = Math.round((intervalStart.getTime() - originalWeekStart.getTime()) / WEEK_MS);
 		const weeksInInterval = Math.round((intervalEnd.getTime() - intervalStart.getTime()) / WEEK_MS);
@@ -97,6 +103,8 @@ export const createRecursiveEventForInterval = (props: IProps) => {
 
 		return events;
 	}
+
+	// Повторяющееся событие с периодом в Месяц
 
 	if (period === 'month') {
 		const eventDuration = new Date(endTime).getTime() - new Date(startTime).getTime();
@@ -131,6 +139,8 @@ export const createRecursiveEventForInterval = (props: IProps) => {
 
 		return events;
 	}
+
+	// Повторяющееся событие с периодом в Год
 
 	if (period === 'year') {
 		const eventStart = new Date(startTime);

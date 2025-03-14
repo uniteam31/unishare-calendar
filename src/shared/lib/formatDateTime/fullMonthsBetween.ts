@@ -14,4 +14,3 @@ export const fullMonthsBetween = (date1: DateType, date2: DateType) => {
 
 	return months;
 };
-

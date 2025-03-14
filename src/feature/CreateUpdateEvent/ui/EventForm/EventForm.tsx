@@ -12,7 +12,7 @@ import s from './EventForm.module.scss';
 
 const { Option } = Select;
 
-const daysOfWeek = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'];
+const DAYS_OF_WEEK = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'];
 
 const DEFAULT_EVENT_TITLE = 'Новое событие';
 
@@ -24,7 +24,7 @@ export const EventForm = ({ onClose }: IProps) => {
 	const {
 		control,
 		handleSubmit: handleSubmitContext,
-		formState: { isValid },
+		formState: { isDirty, isValid },
 		getValues,
 	} = useFormContext<TEventFormFields>();
 
@@ -134,7 +134,7 @@ export const EventForm = ({ onClose }: IProps) => {
 			//
 			isLoading={isEventFormLoading}
 			errors={eventFormErrors}
-			isValid={isValid}
+			isValid={isValid && isDirty}
 			//
 			onSubmit={handleSubmitContext(handleSubmit)}
 			onRemove={selectedEvent?._id ? handleRemove : undefined}
@@ -200,7 +200,7 @@ export const EventForm = ({ onClose }: IProps) => {
 
 			{isRecursiveEvent && period === 'week' && (
 				<div className={s.daysContainer}>
-					{daysOfWeek.map((day, number) => (
+					{DAYS_OF_WEEK.map((day, number) => (
 						<Button
 							key={number}
 							className={s.dayButton}
