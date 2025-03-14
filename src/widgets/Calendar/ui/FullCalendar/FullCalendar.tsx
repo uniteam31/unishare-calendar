@@ -51,7 +51,7 @@ export const Calendar = (props: ICalendarProps) => {
 			ref={calendarRef}
 			plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin ]}
 			initialView={'dayGridMonth'}
-			scrollTime="09:00:00"
+			scrollTime="06:00:00"
 			themeSystem="yeti"
 			headerToolbar={{
 				left: 'prev,today,next',

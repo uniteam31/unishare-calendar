@@ -14,18 +14,23 @@ type Props = {
 	//
 	onSubmit: () => void;
 	onReset?: () => void;
+	onRemove?: () => void;
 	//
-	isDirty?: boolean;
+	isValid?: boolean;
 	isLoading?: boolean;
 	errors?: string | null;
 	mode?: TMode;
 };
 
 export const BaseFormModal = (props: PropsWithChildren<Props>) => {
-	const { className, title, text, onSubmit, onReset, isDirty, errors, isLoading, children, mode } = props;
+	const { className, title, text, onSubmit, onReset, onRemove, isValid, errors, isLoading, children, mode } = props;
 
 	const handleReset = () => {
 		onReset?.();
+	};
+
+	const handleRemove = () => {
+		onRemove?.();
 	};
 
 	return (
@@ -47,17 +52,27 @@ export const BaseFormModal = (props: PropsWithChildren<Props>) => {
 			{children}
 
 			<div className={s.buttonsWrapper}>
-				<Button className={s.submitButton} disabled={!isDirty || isLoading}>
+				<Button className={s.submitButton} disabled={!isValid || isLoading}>
 					{!mode ? 'Сохранить' : mode === 'create' ? 'Создать' : 'Обновить'}
 				</Button>
 
 				{onReset && (
 					<Button
 						className={s.resetButton}
-						disabled={!isDirty || isLoading}
+						disabled={!isValid || isLoading}
 						onClick={handleReset}
 					>
 						Сбросить
+					</Button>
+				)}
+
+				{onRemove && (
+					<Button
+						className={s.removeButton}
+						disabled={isLoading}
+						onClick={handleRemove}
+					>
+						Удалить
 					</Button>
 				)}
 			</div>

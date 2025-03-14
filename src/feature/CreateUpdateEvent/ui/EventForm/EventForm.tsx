@@ -14,6 +14,8 @@ const { Option } = Select;
 
 const daysOfWeek = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'];
 
+const DEFAULT_EVENT_TITLE = 'Новое событие';
+
 interface IProps {
 	onClose?: () => void;
 }
@@ -22,13 +24,14 @@ export const EventForm = ({ onClose }: IProps) => {
 	const {
 		control,
 		handleSubmit: handleSubmitContext,
-		formState: { isDirty },
+		formState: { isValid },
 		getValues,
 	} = useFormContext<TEventFormFields>();
 
 	const {
 		createEvent,
 		updateEvent,
+		deleteEvent,
 		isLoading: isEventFormLoading,
 		error: eventFormErrors,
 	} = useEventApi();
@@ -45,11 +48,11 @@ export const EventForm = ({ onClose }: IProps) => {
 
 	const {
 		field: { value: startTime, onChange: onChangeStartTime },
-	} = useController({ control, name: 'startTime', defaultValue: selectedEvent?.startTime });
+	} = useController({ control, name: 'startTime', defaultValue: selectedEvent?.startTime, rules: { required: true } });
 
 	const {
 		field: { value: endTime, onChange: onChangeEndTime },
-	} = useController({ control, name: 'endTime', defaultValue: selectedEvent?.endTime });
+	} = useController({ control, name: 'endTime', defaultValue: selectedEvent?.endTime, rules: { required: true } });
 
 	const {
 		field: { value: interval, onChange: onChangeInterval },
@@ -96,6 +99,11 @@ export const EventForm = ({ onClose }: IProps) => {
 			formValues.days = [];
 		}
 
+		// Если названия нет, пишем название по умолчанию
+		if (!formValues.title) {
+			formValues.title = DEFAULT_EVENT_TITLE;
+		}
+
 		if (selectedEvent?._id) {
 			updateEvent({ formValues, _id: selectedEvent._id }).then((result) =>  {
 				onClose?.();
@@ -103,6 +111,15 @@ export const EventForm = ({ onClose }: IProps) => {
 			});
 		} else {
 			createEvent({ formValues }).then((result) =>  {
+				onClose?.();
+				updateCachedEvents(result);
+			});
+		}
+	};
+
+	const handleRemove = () => {
+		if (selectedEvent?._id) {
+			deleteEvent({ _id: selectedEvent._id }).then((result) =>  {
 				onClose?.();
 				updateCachedEvents(result);
 			});
@@ -117,9 +134,10 @@ export const EventForm = ({ onClose }: IProps) => {
 			//
 			isLoading={isEventFormLoading}
 			errors={eventFormErrors}
-			isDirty={isDirty}
+			isValid={isValid}
 			//
 			onSubmit={handleSubmitContext(handleSubmit)}
+			onRemove={selectedEvent?._id ? handleRemove : undefined}
 		>
 			<Input className={s.input} label="Заголовок" value={title} onChange={onChangeTitle} />
 
@@ -143,6 +161,7 @@ export const EventForm = ({ onClose }: IProps) => {
 				onChange={onChangeEndTime}
 				onOk={onChangeEndTime}
 				value={endTime && dayjs(endTime)}
+				minDate={startTime ? dayjs(startTime) : undefined}
 			/>
 
 			<CheckboxItem

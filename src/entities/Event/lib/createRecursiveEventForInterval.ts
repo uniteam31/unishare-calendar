@@ -21,7 +21,7 @@ export const createRecursiveEventForInterval = (props: IProps) => {
 
 	const events: IEvent[] = [];
 
-	if (period === 'day' || period === 'week' && (!days || !days?.length)) {
+	if (period === 'day' || period === 'week' && !days?.length) {
 		const actualPeriod = interval * mapPeriodToTime[period];
 
 		const eventEndNumber = new Date(endTime).getTime();
@@ -46,8 +46,56 @@ export const createRecursiveEventForInterval = (props: IProps) => {
 		return events;
 	}
 
-	if (period === 'week') {
-		// TBD
+	if (period === 'week' && days?.length) {
+		const eventStart = new Date(startTime);
+		eventStart.setDate(eventStart.getDate() - eventStart.getDay() + 1);
+
+		const eventEnd = new Date(endTime);
+		eventEnd.setDate(eventEnd.getDate() - eventEnd.getDay() + 1);
+
+		const originalWeekStart = new Date(startTime);
+		originalWeekStart.setHours(0, 0, 0, 0);
+		originalWeekStart.setDate(originalWeekStart.getDate() - originalWeekStart.getDay() + 1);
+
+		if (intervalEnd.getTime() - intervalStart.getTime() === DAY_MS) {
+			const currentWeekStart = new Date(intervalStart);
+			currentWeekStart.setDate(currentWeekStart.getDate() - (currentWeekStart.getDay() || 6)  + 1);
+			const currentWeekDay = (intervalStart.getDay() + 6) % 7;
+
+			const diff = Math.round((currentWeekStart.getTime() - originalWeekStart.getTime()) / WEEK_MS);
+
+			if (diff >= 0 && diff % interval === 0 && days.includes(currentWeekDay)) {
+				return [{
+					...event,
+					startTime: new Date(eventStart.getTime() + diff * WEEK_MS + currentWeekDay * DAY_MS).toISOString(),
+					endTime: new Date(eventEnd.getTime() + diff * WEEK_MS + currentWeekDay * DAY_MS).toISOString(),
+				}];
+			}
+
+			return [];
+		}
+
+		const events: IEvent[] = [];
+
+		const diff = Math.round((intervalStart.getTime() - originalWeekStart.getTime()) / WEEK_MS);
+		const weeksInInterval = Math.round((intervalEnd.getTime() - intervalStart.getTime()) / WEEK_MS);
+
+		for (let n = diff < 0 ? 0 : diff; n < diff + weeksInInterval; n++) {
+			if (n % interval === 0) {
+				days.forEach((day) => {
+					if (n === 0 && new Date(startTime).getDay() -1 > day)
+						return;
+
+					events.push({
+						...event,
+						startTime: new Date(eventStart.getTime() + n * WEEK_MS + day * DAY_MS).toISOString(),
+						endTime: new Date(eventEnd.getTime() + n * WEEK_MS + day * DAY_MS).toISOString(),
+					});
+				});
+			}
+		}
+
+		return events;
 	}
 
 	if (period === 'month') {
