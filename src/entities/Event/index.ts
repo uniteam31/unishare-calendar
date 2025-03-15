@@ -2,6 +2,8 @@ import { ListItem } from './ui/ListItem/ListItem';
 
 export type { IEvent, TEventFormFields } from './model/types/event';
 
+export { EMPTY_EVENT } from './model/emptyEvent';
+
 type TEventComponents = {
 	ListItem: typeof ListItem;
 };

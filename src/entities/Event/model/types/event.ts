@@ -6,7 +6,7 @@ type TPeriod = 'day' | 'week' | 'month' | 'year';
 
 /** Экземпляр обычного события в календаре */
 interface EventBase {
-	title: string;
+	title?: string;
 	description?: string;
 	startTime: TimeString;
 	endTime: TimeString;

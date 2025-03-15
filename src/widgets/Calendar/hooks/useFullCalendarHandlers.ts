@@ -2,7 +2,7 @@ import type { EventChangeArg, DateSelectArg, EventClickArg, DatesSetArg } from '
 import FullCalendar from '@fullcalendar/react';
 import { useEventApi } from 'feature/CreateUpdateEvent/api/useEventApi';
 import { RefObject, useEffect } from 'react';
-import { useEventStore } from 'entities/Event';
+import { EMPTY_EVENT, useEventStore } from 'entities/Event';
 import { LOCAL_STORAGE } from 'shared/const';
 
 type TInterval = {
@@ -84,12 +84,9 @@ export const useFullCalendarHandlers = (props: IProps) => {
 		setCurrentDate(info.start);
 
 		setSelectedEvent({
-			_id: '',
-			title: '',
+			...EMPTY_EVENT,
 			startTime: info.start.toISOString(),
 			endTime: info.end.toISOString(),
-			createdAt: '',
-			updatedAt: '',
 		});
 	};
 

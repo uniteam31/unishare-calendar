@@ -22,8 +22,6 @@ const EVENT_COLORS = [
 	'#8850e4',
 ];
 
-const DEFAULT_EVENT_TITLE = 'Новое событие';
-
 interface IProps {
 	onClose?: () => void;
 }
@@ -119,11 +117,6 @@ export const EventForm = ({ onClose }: IProps) => {
 			formValues.days = [];
 		} else if (period !== 'week')  {
 			formValues.days = [];
-		}
-
-		// Если названия нет, пишем название по умолчанию
-		if (!formValues.title) {
-			formValues.title = DEFAULT_EVENT_TITLE;
 		}
 
 		if (selectedEvent?._id) {
