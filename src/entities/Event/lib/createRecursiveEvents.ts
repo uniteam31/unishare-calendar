@@ -24,6 +24,7 @@ export const createRecursiveEvent = (props: IProps) => {
 				start: recursive.startTime,
 				end: recursive.endTime,
 				title: event.title,
+				color: event.color,
 				eventData: event,
 			}));
 
