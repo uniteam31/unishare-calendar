@@ -49,7 +49,7 @@ export const useFullCalendarHandlers = (props: IProps) => {
 	const handleDatesSet = (arg: DatesSetArg) => {
 		const { activeStart, activeEnd, currentStart, type } = arg.view;
 
-		if (activeStart.getTime() === interval.start.getTime() ||
+		if (activeStart.getTime() === interval.start.getTime() &&
 			activeEnd.getTime() === interval.end.getTime()) {
 			return;
 		}
