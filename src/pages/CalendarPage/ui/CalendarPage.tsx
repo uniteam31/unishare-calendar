@@ -3,12 +3,17 @@ import React, { useEffect, useState } from 'react';
 import { MiniCalendar, FullCalendar } from 'widgets/Calendar';
 import { SpacesFilter } from 'widgets/SpacesFilter';
 import { useEventStore, useGetEvents } from 'entities/Event';
+import { LOCAL_STORAGE } from 'shared/const';
 import { Button } from 'shared/ui';
 import { Divider } from 'shared/ui';
 import s from './CalendarPage.module.scss';
 
 export const CalendarPage = () => {
-	const [currentDate, setCurrentDate] = useState<Date>(new Date());
+	const DEFAULT_CURRENT_DAY = localStorage.getItem(LOCAL_STORAGE.CALENDAR_CURRENT_DATE);
+
+	const [currentDate, setCurrentDate] = useState<Date>(
+		DEFAULT_CURRENT_DAY ? new Date(DEFAULT_CURRENT_DAY) : new Date()
+	);
 	const [isEventModalOpen, setIsEventModalOpen] = useState(false);
 	const { events } = useGetEvents();
 	const { selectedEvent, setSelectedEvent } = useEventStore();

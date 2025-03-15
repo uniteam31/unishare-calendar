@@ -7,6 +7,7 @@ import React, { useMemo, useRef, useState } from 'react';
 import { type IEvent, mapEventToFullCalendarEvent, createRecursiveEvent } from 'entities/Event';
 import { useFullCalendarHandlers } from '../../hooks/useFullCalendarHandlers';
 import './calendar.scss';
+import { LOCAL_STORAGE } from 'shared/const';
 
 
 type TInterval = {
@@ -22,7 +23,8 @@ interface ICalendarProps {
 }
 
 export const Calendar = (props: ICalendarProps) => {
-	const { events } = props;
+	const { events, currentDate } = props;
+	const DEFAULT_VIEW = localStorage.getItem(LOCAL_STORAGE.CALENDAR_CURRENT_VIEW) ?? 'dayGridMonth';
 
 	const calendarRef = useRef<FullCalendar>(null);
 	const [interval, setInterval] = useState<TInterval>({
@@ -49,7 +51,8 @@ export const Calendar = (props: ICalendarProps) => {
 		<FullCalendar
 			ref={calendarRef}
 			plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin ]}
-			initialView={'dayGridMonth'}
+			initialView={DEFAULT_VIEW}
+			initialDate={currentDate}
 			scrollTime="06:00:00"
 			themeSystem="yeti"
 			headerToolbar={{

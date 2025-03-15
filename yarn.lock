@@ -1195,7 +1195,7 @@
   dependencies:
     "@fullcalendar/daygrid" "~6.1.15"
 
-"@hookform/resolvers@^3.10.0":
+"@hookform/resolvers@3.10.0":
   version "3.10.0"
   resolved "https://registry.yarnpkg.com/@hookform/resolvers/-/resolvers-3.10.0.tgz#7bfd18113daca4e57e27e1205b7d5a2d371aa59a"
   integrity sha512-79Dv+3mDF7i+2ajj7SkypSKHhl1cbln1OGavqrsF7p6mbUv11xpqpacPsGDCTRvCSjEEIez2ef1NveSVL3b0Ag==
@@ -2616,10 +2616,10 @@
   resolved "https://npm.pkg.github.com/download/@uniteam31/uni-shared-toolkit/0.0.2/8611de6455cdd59012d4a6686a123b7f12f15da4#8611de6455cdd59012d4a6686a123b7f12f15da4"
   integrity sha512-0eZ29UBLf0fbDos3Oo9yclLjTcZJ7sKO12FR7cBQjAvkXGSwd82BwJkdc6H6N/MT1fQH7jUhwQAA7DZMf1aVnQ==
 
-"@uniteam31/uni-shared-types@0.0.3":
-  version "0.0.3"
-  resolved "https://npm.pkg.github.com/download/@uniteam31/uni-shared-types/0.0.3/29521f6579c06bd1ff0ab4969a3173cb2f8ae691#29521f6579c06bd1ff0ab4969a3173cb2f8ae691"
-  integrity sha512-eo8Dgeo7aI/AfXCzanlEzji7OgjjLvxHN2R8Xe6HNRWBoC1b+099MIn9wbUO+/fu30DCX95J2ri5teJ6ylNxEA==
+"@uniteam31/uni-shared-types@0.0.5":
+  version "0.0.5"
+  resolved "https://npm.pkg.github.com/download/@uniteam31/uni-shared-types/0.0.5/f7ad7748d1f81892e32d6ab92facb59315769c25#f7ad7748d1f81892e32d6ab92facb59315769c25"
+  integrity sha512-GrQpmbf+0/6iSK0rryQrIdYNdT8ljneqDg8CC0tdnGmX3EhogcUd/wXS75NSiv9+fy6SV2/lz2IRKQgm5oZI/w==
 
 "@uniteam31/uni-shared-ui@0.0.14":
   version "0.0.14"
@@ -6172,11 +6172,6 @@ minimist@^1.2.0, minimist@^1.2.6:
   version "1.2.8"
   resolved "https://registry.yarnpkg.com/minimist/-/minimist-1.2.8.tgz#c1a464e7693302e082a075cee0c057741ac4772c"
   integrity sha512-2yyAR8qBkN3YuheJanUpWC5U3bb5osDywNB8RzDVlDwDHbocAJveqqj1u8+SVD7jkWT4yvsHCpWqqWqAxb0zCA==
-
-moment@^2.30.1:
-  version "2.30.1"
-  resolved "https://registry.yarnpkg.com/moment/-/moment-2.30.1.tgz#f8c91c07b7a786e30c59926df530b4eac96974ae"
-  integrity sha512-uEmtNhbDOrWPFS+hdjFCBfy9f2YoyzRpwcl+DqpC6taX21FzsTLQVbMV/W7PzNSX6x/bhC1zA3c2UQ5NzH6how==
 
 morgan@^1.10.0:
   version "1.10.0"

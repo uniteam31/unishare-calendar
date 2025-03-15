@@ -2,8 +2,8 @@ import type { EventChangeArg, DateSelectArg, EventClickArg, DatesSetArg } from '
 import FullCalendar from '@fullcalendar/react';
 import { useEventApi } from 'feature/CreateUpdateEvent/api/useEventApi';
 import { RefObject, useEffect } from 'react';
-import { useEventStore, useGetEvents } from 'entities/Event';
-import type { IEvent } from 'entities/Event';
+import { EMPTY_EVENT, useEventStore } from 'entities/Event';
+import { LOCAL_STORAGE } from 'shared/const';
 
 type TInterval = {
 	start: Date;
@@ -24,7 +24,6 @@ export const useFullCalendarHandlers = (props: IProps) => {
 	const { currentDate, setCurrentDate, interval, setInterval, calendarRef } = props;
 
 	const { updateEvent } = useEventApi();
-	const { events, mutateEvents } = useGetEvents();
 	const { setSelectedEvent } = useEventStore();
 
 	useEffect(() => {
@@ -32,28 +31,19 @@ export const useFullCalendarHandlers = (props: IProps) => {
 			const calendarApi = calendarRef.current.getApi();
 			calendarApi.gotoDate(currentDate);
 		}
-	}, [calendarRef, currentDate]);
-
-	const updateCachedEvents = (newEvent: IEvent) => {
-		const updatedEvents = events.filter((e) => e._id !== newEvent?._id );
-		updatedEvents.push(newEvent);
-
-		mutateEvents(updatedEvents).finally();
-	};
+		localStorage.setItem(LOCAL_STORAGE.CALENDAR_CURRENT_DATE, currentDate.toString());
+	}, [currentDate]);
 
 	const handleEventChange = (info: EventChangeArg) => {
 		const newEvent = {
-			...info.event.extendedProps.eventData,
-			startTime: info.event.start,
-			endTime: info.event.end,
+			startTime: info.event.start?.toISOString(),
+			endTime: info.event.end?.toISOString(),
 		};
 
 		updateEvent({
 			formValues: newEvent,
 			_id: info.event.extendedProps.eventData._id,
 		}).finally();
-
-		updateCachedEvents(newEvent);
 	};
 
 	const handleDatesSet = (arg: DatesSetArg) => {
@@ -68,6 +58,8 @@ export const useFullCalendarHandlers = (props: IProps) => {
 			end: activeEnd,
 		});
 
+		localStorage.setItem(LOCAL_STORAGE.CALENDAR_CURRENT_VIEW, type);
+
 		const newDate = currentStart;
 		switch (type) {
 			case 'dayGridMonth':
@@ -80,7 +72,7 @@ export const useFullCalendarHandlers = (props: IProps) => {
 		}
 		if (newDate.getTime() === currentDate.getTime())
 			return;
-		
+
 		setCurrentDate(newDate);
 	};
 
@@ -92,12 +84,9 @@ export const useFullCalendarHandlers = (props: IProps) => {
 		setCurrentDate(info.start);
 
 		setSelectedEvent({
-			_id: 0,
-			title: '',
+			...EMPTY_EVENT,
 			startTime: info.start.toISOString(),
 			endTime: info.end.toISOString(),
-			createdAt: '',
-			updatedAt: '',
 		});
 	};
 
