@@ -24,7 +24,6 @@ export const createRecursiveEvent = (props: IProps) => {
 				start: recursive.startTime,
 				end: recursive.endTime,
 				title: event.title,
-				allDay: event.allDay,
 				eventData: event,
 			}));
 

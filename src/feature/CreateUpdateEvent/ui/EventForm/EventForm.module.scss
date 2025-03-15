@@ -20,11 +20,16 @@
 	width: 120px;
 }
 
-.daysContainer {
+.buttonContainer {
 	display: flex;
 	gap: 6px;
 }
 
 .dayButton {
 	width: 45px;
+}
+
+.colorButton {
+	width: 36px;
+	border: none;
 }

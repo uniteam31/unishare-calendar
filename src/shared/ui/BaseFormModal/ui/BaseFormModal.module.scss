@@ -38,6 +38,10 @@
 			background-color: var(--mid-gray-bg-color);
 			color: #fff;
 		}
+
+		&:hover {
+			background-color: #c63027;
+		}
 	}
 
 	.error {
