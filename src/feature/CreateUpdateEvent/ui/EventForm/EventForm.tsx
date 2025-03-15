@@ -14,6 +14,14 @@ const { Option } = Select;
 
 const DAYS_OF_WEEK = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'];
 
+const EVENT_COLORS = [
+	'#219bfb',
+	'#ed4949',
+	'#f6ad40',
+	'#71ca36',
+	'#8850e4',
+];
+
 const DEFAULT_EVENT_TITLE = 'Новое событие';
 
 interface IProps {
@@ -70,10 +78,19 @@ export const EventForm = ({ onClose }: IProps) => {
 		field: { value: description, onChange: onChangeDescription },
 	} = useController({ control, name: 'description', defaultValue: selectedEvent?.description });
 
+	const {
+		field: { value: color, onChange: onChangeColor },
+	} = useController({ control, name: 'color', defaultValue: selectedEvent?.color ?? EVENT_COLORS[0] });
+
 	useEffect(() => {
+		if (!isRecursiveEvent || period !== 'week')
+			return;
+
 		const newDay = (new Date(startTime).getDay() + 6) % 7;
 		onChangeDays([...days?.filter(day => day !== newDay) ?? [], newDay]);
 	}, [startTime]);
+
+	// Form Handlers
 
 	const handleDayClick = (dayNumber: number) => {
 		if (!days) return;
@@ -204,7 +221,7 @@ export const EventForm = ({ onClose }: IProps) => {
 			)}
 
 			{isRecursiveEvent && period === 'week' && (
-				<div className={s.daysContainer}>
+				<div className={s.buttonContainer}>
 					{DAYS_OF_WEEK.map((day, number) => (
 						<Button
 							key={number}
@@ -224,6 +241,26 @@ export const EventForm = ({ onClose }: IProps) => {
 				value={description}
 				onChange={onChangeDescription}
 			/>
+
+			Цвет события
+
+			<div className={s.buttonContainer}>
+				{EVENT_COLORS.map((buttonColor) => (
+					<Button
+						key={buttonColor}
+						className={s.colorButton}
+						style={{
+							backgroundColor: buttonColor,
+							opacity: buttonColor === color ? 1 : 0.4,
+						}}
+						type="primary"
+						onClick={() => onChangeColor(buttonColor)}
+					>
+						{ buttonColor === color && '✓' }
+					</Button>
+				))}
+			</div>
+
 		</BaseFormModal>
 	);
 };

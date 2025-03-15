@@ -4,6 +4,6 @@ export const mapEventToFullCalendarEvent = (event: IEvent): ICalendarEvent => ({
 	start: event.startTime,
 	end: event.endTime,
 	title: event.title,
-	allDay: event.allDay,
 	eventData: event,
+	color: event.color,
 });

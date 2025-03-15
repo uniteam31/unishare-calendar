@@ -10,7 +10,7 @@ interface EventBase {
 	description?: string;
 	startTime: TimeString;
 	endTime: TimeString;
-	allDay?: boolean;
+	color?: string;
 }
 
 /** Экземпляр повторяющегося события */
@@ -33,4 +33,5 @@ export interface ICalendarEvent {
 	title: string;
 	allDay?: boolean;
 	eventData: IEvent;
+	color?: string;
 }
