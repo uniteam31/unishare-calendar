@@ -7,8 +7,6 @@ import { Link, Warning, Widget } from 'shared/ui';
 import { Skeleton } from 'shared/ui';
 import s from './CalendarWidget.module.scss';
 
-const TODAY = new Date();
-
 interface INoteWidgetProps {
 	className?: string;
 }
@@ -20,8 +18,8 @@ export const CalendarWidget = (props: INoteWidgetProps) => {
 	const { setSelectedEvent } = useEventStore();
 
 	const handleNoteClick = useCallback(
-		(id: IEvent['_id']) => {
-			const selectedEvent = events.find((event) => id === event._id);
+		(id: IEvent['id']) => {
+			const selectedEvent = events.find((event) => id === event.id);
 
 			if (!selectedEvent) {
 				return;
@@ -34,8 +32,10 @@ export const CalendarWidget = (props: INoteWidgetProps) => {
 
 	const todayEvents = useMemo(() => {
 		const now = new Date();
-		return events.filter(event =>
-			isSameDate(event.startTime, now) && new Date(event.startTime).getTime() > now.getTime()
+		return events.filter(
+			(event) =>
+				isSameDate(event.startTime, now) &&
+				new Date(event.startTime).getTime() > now.getTime(),
 		);
 	}, [events]);
 
@@ -50,7 +50,7 @@ export const CalendarWidget = (props: INoteWidgetProps) => {
 
 					{!isLoading &&
 						todayEvents.slice(0, 2).map((event) => (
-							<Link to={'/calendar'} key={event._id}>
+							<Link to={'/calendar'} key={event.id}>
 								<Event.ListItem
 									className={s.event}
 									{...event}
@@ -59,13 +59,9 @@ export const CalendarWidget = (props: INoteWidgetProps) => {
 							</Link>
 						))}
 
-					{!isLoading &&
-						!todayEvents.length && (
-							<Warning
-								title={'На сегодня событий больше нет'}
-								theme={'blue'}
-							/>
-						)}
+					{!isLoading && !todayEvents.length && (
+						<Warning title={'На сегодня событий больше нет'} theme={'blue'} />
+					)}
 				</div>
 			</Widget>
 		</div>

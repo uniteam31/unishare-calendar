@@ -2,7 +2,7 @@ import type { TMeta } from 'shared/types';
 
 type TimeString = string;
 
-type TPeriod = 'day' | 'week' | 'month' | 'year';
+export type TPeriod = 'DAY' | 'WEEK' | 'MONTH' | 'YEAR';
 
 /** Экземпляр обычного события в календаре */
 interface EventBase {

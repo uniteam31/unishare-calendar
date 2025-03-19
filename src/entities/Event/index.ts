@@ -1,6 +1,6 @@
 import { ListItem } from './ui/ListItem/ListItem';
 
-export type { IEvent, TEventFormFields } from './model/types/event';
+export type { IEvent, TEventFormFields, TPeriod } from './model/types/event';
 
 export { EMPTY_EVENT } from './model/emptyEvent';
 
