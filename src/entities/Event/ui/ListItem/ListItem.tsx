@@ -6,7 +6,7 @@ import type { IEvent } from '../../model/types/event';
 import s from './ListItem.module.scss';
 
 interface IListItemProps extends Partial<IEvent> {
-	onClick?: (id: IEvent['_id']) => void;
+	onClick?: (id: IEvent['id']) => void;
 	//
 	className?: string;
 }
@@ -15,15 +15,15 @@ interface IListItemProps extends Partial<IEvent> {
 export const ListItem: FC<IListItemProps> = memo((props) => {
 	const { title, startTime, endTime, className } = props;
 	//
-	const { _id, onClick } = props;
+	const { id, onClick } = props;
 
 	const handleClick = useCallback(() => {
-		if (!_id) {
+		if (!id) {
 			return;
 		}
 
-		onClick?.(_id);
-	}, [_id, onClick]);
+		onClick?.(id);
+	}, [id, onClick]);
 
 	const timeInterval = startTime?.length ? endTime?.length
 		? formatTimeInterval(new Date(startTime), new Date(endTime))

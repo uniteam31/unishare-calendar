@@ -42,7 +42,7 @@ export const useFullCalendarHandlers = (props: IProps) => {
 
 		updateEvent({
 			formValues: newEvent,
-			_id: info.event.extendedProps.eventData._id,
+			id: info.event.extendedProps.eventData.id,
 		}).finally();
 	};
 

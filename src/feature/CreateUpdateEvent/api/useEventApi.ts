@@ -4,18 +4,17 @@ import { axiosInstance } from 'shared/api';
 import { getApiResponseErrorMessage } from 'shared/lib';
 import type { ApiResponse, TMeta } from 'shared/types';
 
-
 interface ICreateEventProps {
 	formValues: Partial<TEventFormFields>;
 }
 
 interface IUpdateEventProps {
 	formValues: Partial<TEventFormFields>;
-	_id: TMeta['_id'];
+	id: TMeta['id'];
 }
 
 interface IDeleteEventProps {
-	_id: TMeta['_id'];
+	id: TMeta['id'];
 }
 
 type TApiEventResponse = ApiResponse<IEvent>;
@@ -31,10 +30,7 @@ export const useEventApi = () => {
 		setError(null);
 
 		try {
-			const response = await axiosInstance.post<TApiEventResponse>(
-				'/calendars/events',
-				formValues,
-			);
+			const response = await axiosInstance.post<TApiEventResponse>('/events', formValues);
 
 			const createdEvent = response.data.data;
 
@@ -53,14 +49,14 @@ export const useEventApi = () => {
 	}, []);
 
 	const updateEvent = useCallback(async (props: IUpdateEventProps) => {
-		const { formValues, _id = '' } = props;
+		const { formValues, id = '' } = props;
 
 		setIsLoading(true);
 		setError(null);
 
 		try {
 			const response = await axiosInstance.put<TApiEventResponse>(
-				`/calendars/events/${_id}`,
+				`/events/${id}`,
 				formValues,
 			);
 
@@ -81,15 +77,13 @@ export const useEventApi = () => {
 	}, []);
 
 	const deleteEvent = useCallback(async (props: IDeleteEventProps) => {
-		const { _id = '' } = props;
+		const { id = '' } = props;
 
 		setIsLoading(true);
 		setError(null);
 
 		try {
-			const response = await axiosInstance.delete<TApiEventResponse>(
-				`/calendars/events/${_id}`,
-			);
+			const response = await axiosInstance.delete<TApiEventResponse>(`/events/${id}`);
 
 			const deletedEvent = response.data.data;
 

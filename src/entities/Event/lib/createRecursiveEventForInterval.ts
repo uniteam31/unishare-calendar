@@ -2,8 +2,8 @@ import { fullMonthsBetween, DAY_MS, WEEK_MS } from 'shared/lib';
 import type { IEvent } from '../model/types/event';
 
 const mapPeriodToTime = {
-	'day': DAY_MS,
-	'week': WEEK_MS,
+	DAY: DAY_MS,
+	WEEK: WEEK_MS,
 };
 
 interface IProps {
@@ -16,14 +16,13 @@ export const createRecursiveEventForInterval = (props: IProps) => {
 	const { event, intervalStart, intervalEnd } = props;
 	const { startTime, endTime, period, interval, days } = event;
 
-	if (!interval || !period)
-		return;
+	if (!interval || !period) return;
 
 	const events: IEvent[] = [];
 
 	// Повторяющееся событие с периодом в День или Неделю (без доп опций)
 
-	if (period === 'day' || period === 'week' && !days?.length) {
+	if (period === 'DAY' || (period === 'WEEK' && !days?.length)) {
 		const actualPeriod = interval * mapPeriodToTime[period];
 
 		const eventEndNumber = new Date(endTime).getTime();
@@ -50,7 +49,7 @@ export const createRecursiveEventForInterval = (props: IProps) => {
 
 	// Повторяющееся событие с периодом в Неделю с уточнением дней недели
 
-	if (period === 'week' && days?.length) {
+	if (period === 'WEEK' && days?.length) {
 		const eventStart = new Date(startTime);
 		eventStart.setDate(eventStart.getDate() - eventStart.getDay() + 1);
 
@@ -65,17 +64,27 @@ export const createRecursiveEventForInterval = (props: IProps) => {
 
 		if (intervalEnd.getTime() - intervalStart.getTime() === DAY_MS) {
 			const currentWeekStart = new Date(intervalStart);
-			currentWeekStart.setDate(currentWeekStart.getDate() - (currentWeekStart.getDay() || 6)  + 1);
+			currentWeekStart.setDate(
+				currentWeekStart.getDate() - (currentWeekStart.getDay() || 6) + 1,
+			);
 			const currentWeekDay = (intervalStart.getDay() + 6) % 7;
 
-			const diff = Math.round((currentWeekStart.getTime() - originalWeekStart.getTime()) / WEEK_MS);
+			const diff = Math.round(
+				(currentWeekStart.getTime() - originalWeekStart.getTime()) / WEEK_MS,
+			);
 
 			if (diff >= 0 && diff % interval === 0 && days.includes(currentWeekDay)) {
-				return [{
-					...event,
-					startTime: new Date(eventStart.getTime() + diff * WEEK_MS + currentWeekDay * DAY_MS).toISOString(),
-					endTime: new Date(eventEnd.getTime() + diff * WEEK_MS + currentWeekDay * DAY_MS).toISOString(),
-				}];
+				return [
+					{
+						...event,
+						startTime: new Date(
+							eventStart.getTime() + diff * WEEK_MS + currentWeekDay * DAY_MS,
+						).toISOString(),
+						endTime: new Date(
+							eventEnd.getTime() + diff * WEEK_MS + currentWeekDay * DAY_MS,
+						).toISOString(),
+					},
+				];
 			}
 
 			return [];
@@ -84,18 +93,23 @@ export const createRecursiveEventForInterval = (props: IProps) => {
 		// Для случаев вида календаря Недельного и Месячного
 
 		const diff = Math.round((intervalStart.getTime() - originalWeekStart.getTime()) / WEEK_MS);
-		const weeksInInterval = Math.round((intervalEnd.getTime() - intervalStart.getTime()) / WEEK_MS);
+		const weeksInInterval = Math.round(
+			(intervalEnd.getTime() - intervalStart.getTime()) / WEEK_MS,
+		);
 
 		for (let n = diff < 0 ? 0 : diff; n < diff + weeksInInterval; n++) {
 			if (n % interval === 0) {
 				days.forEach((day) => {
-					if (n === 0 && new Date(startTime).getDay() -1 > day)
-						return;
+					if (n === 0 && new Date(startTime).getDay() - 1 > day) return;
 
 					events.push({
 						...event,
-						startTime: new Date(eventStart.getTime() + n * WEEK_MS + day * DAY_MS).toISOString(),
-						endTime: new Date(eventEnd.getTime() + n * WEEK_MS + day * DAY_MS).toISOString(),
+						startTime: new Date(
+							eventStart.getTime() + n * WEEK_MS + day * DAY_MS,
+						).toISOString(),
+						endTime: new Date(
+							eventEnd.getTime() + n * WEEK_MS + day * DAY_MS,
+						).toISOString(),
 					});
 				});
 			}
@@ -106,11 +120,16 @@ export const createRecursiveEventForInterval = (props: IProps) => {
 
 	// Повторяющееся событие с периодом в Месяц
 
-	if (period === 'month') {
+	if (period === 'MONTH') {
 		const eventDuration = new Date(endTime).getTime() - new Date(startTime).getTime();
 		const date = new Date(startTime).getDate();
 
-		for (let n = intervalStart.getMonth(); n <= intervalEnd.getMonth() + ((intervalEnd.getFullYear() - intervalStart.getFullYear()) * 12); n++) {
+		for (
+			let n = intervalStart.getMonth();
+			n <=
+			intervalEnd.getMonth() + (intervalEnd.getFullYear() - intervalStart.getFullYear()) * 12;
+			n++
+		) {
 			const eventStart = new Date(startTime);
 			eventStart.setFullYear(intervalStart.getFullYear());
 			eventStart.setMonth(n);
@@ -126,8 +145,10 @@ export const createRecursiveEventForInterval = (props: IProps) => {
 			if (
 				diff >= 0 &&
 				diff % interval === 0 &&
-				(eventStart.getTime() <= intervalEnd.getTime() && eventStart.getTime() >= intervalStart.getTime() ||
-					eventStart.getTime() <= intervalEnd.getTime() && eventStart.getTime() >= intervalStart.getTime())
+				((eventStart.getTime() <= intervalEnd.getTime() &&
+					eventStart.getTime() >= intervalStart.getTime()) ||
+					(eventStart.getTime() <= intervalEnd.getTime() &&
+						eventStart.getTime() >= intervalStart.getTime()))
 			) {
 				events.push({
 					...event,
@@ -142,7 +163,7 @@ export const createRecursiveEventForInterval = (props: IProps) => {
 
 	// Повторяющееся событие с периодом в Год
 
-	if (period === 'year') {
+	if (period === 'YEAR') {
 		const eventStart = new Date(startTime);
 		const eventDuration = new Date(endTime).getTime() - eventStart.getTime();
 
@@ -155,8 +176,10 @@ export const createRecursiveEventForInterval = (props: IProps) => {
 			if (
 				diff >= 0 &&
 				diff % interval === 0 &&
-				(eventStart.getTime() <= intervalEnd.getTime() && eventStart.getTime() >= intervalStart.getTime() ||
-				eventStart.getTime() <= intervalEnd.getTime() && eventStart.getTime() >= intervalStart.getTime())
+				((eventStart.getTime() <= intervalEnd.getTime() &&
+					eventStart.getTime() >= intervalStart.getTime()) ||
+					(eventStart.getTime() <= intervalEnd.getTime() &&
+						eventStart.getTime() >= intervalStart.getTime()))
 			) {
 				events.push({
 					...event,

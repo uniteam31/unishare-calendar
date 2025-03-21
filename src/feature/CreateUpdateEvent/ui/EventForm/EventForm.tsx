@@ -4,7 +4,7 @@ import dayjs from 'dayjs';
 import { useEffect, useState } from 'react';
 import { useController, useFormContext } from 'react-hook-form';
 import { useEventStore, useGetEvents } from 'entities/Event';
-import type { IEvent, TEventFormFields } from 'entities/Event';
+import type { IEvent, TEventFormFields, TPeriod } from 'entities/Event';
 import { TextArea } from 'shared/ui';
 import { Input, CheckboxItem, BaseFormModal } from 'shared/ui';
 import { useEventApi } from '../../api/useEventApi';
@@ -14,13 +14,14 @@ const { Option } = Select;
 
 const DAYS_OF_WEEK = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'];
 
-const EVENT_COLORS = [
-	'#219bfb',
-	'#ed4949',
-	'#f1a329',
-	'#71ca36',
-	'#8850e4',
-];
+const EVENT_COLORS = ['#219bfb', '#ed4949', '#f1a329', '#71ca36', '#8850e4'];
+
+const PERIOD_OPTIONS: Record<TPeriod, string> = {
+	DAY: 'День',
+	WEEK: 'Неделя',
+	MONTH: 'Месяц',
+	YEAR: 'Год',
+};
 
 interface IProps {
 	onClose?: () => void;
@@ -47,18 +48,27 @@ export const EventForm = ({ onClose }: IProps) => {
 	const [isRecursiveEvent, setIsRecursiveEvent] = useState(Boolean(selectedEvent?.period));
 
 	// Form fields
-
 	const {
 		field: { value: title, onChange: onChangeTitle },
 	} = useController({ control, name: 'title', defaultValue: selectedEvent?.title });
 
 	const {
 		field: { value: startTime, onChange: onChangeStartTime },
-	} = useController({ control, name: 'startTime', defaultValue: selectedEvent?.startTime, rules: { required: true } });
+	} = useController({
+		control,
+		name: 'startTime',
+		defaultValue: selectedEvent?.startTime,
+		rules: { required: true },
+	});
 
 	const {
 		field: { value: endTime, onChange: onChangeEndTime },
-	} = useController({ control, name: 'endTime', defaultValue: selectedEvent?.endTime, rules: { required: true } });
+	} = useController({
+		control,
+		name: 'endTime',
+		defaultValue: selectedEvent?.endTime,
+		rules: { required: true },
+	});
 
 	const {
 		field: { value: interval, onChange: onChangeInterval },
@@ -66,7 +76,7 @@ export const EventForm = ({ onClose }: IProps) => {
 
 	const {
 		field: { value: period, onChange: onChangePeriod },
-	} = useController({ control, name: 'period', defaultValue: selectedEvent?.period ?? 'day' });
+	} = useController({ control, name: 'period', defaultValue: selectedEvent?.period ?? 'DAY' });
 
 	const {
 		field: { value: days, onChange: onChangeDays },
@@ -78,14 +88,17 @@ export const EventForm = ({ onClose }: IProps) => {
 
 	const {
 		field: { value: color, onChange: onChangeColor },
-	} = useController({ control, name: 'color', defaultValue: selectedEvent?.color ?? EVENT_COLORS[0] });
+	} = useController({
+		control,
+		name: 'color',
+		defaultValue: selectedEvent?.color ?? EVENT_COLORS[0],
+	});
 
 	useEffect(() => {
-		if (!isRecursiveEvent || period !== 'week')
-			return;
+		if (!isRecursiveEvent || period !== 'WEEK') return;
 
 		const newDay = (new Date(startTime).getDay() + 6) % 7;
-		onChangeDays([...days?.filter(day => day !== newDay) ?? [], newDay]);
+		onChangeDays([...(days?.filter((day) => day !== newDay) ?? []), newDay]);
 	}, [startTime]);
 
 	// Form Handlers
@@ -101,7 +114,7 @@ export const EventForm = ({ onClose }: IProps) => {
 	};
 
 	const updateCachedEvents = (newEvent: IEvent) => {
-		const updatedEvents = events.filter((e) => e._id !== newEvent?._id );
+		const updatedEvents = events.filter((e) => e.id !== newEvent?.id);
 		updatedEvents.push(newEvent);
 
 		mutateEvents(updatedEvents).finally();
@@ -115,17 +128,17 @@ export const EventForm = ({ onClose }: IProps) => {
 			formValues.interval = null;
 			formValues.period = null;
 			formValues.days = [];
-		} else if (period !== 'week')  {
+		} else if (period !== 'WEEK') {
 			formValues.days = [];
 		}
 
-		if (selectedEvent?._id) {
-			updateEvent({ formValues, _id: selectedEvent._id }).then((result) =>  {
+		if (selectedEvent?.id) {
+			updateEvent({ formValues, id: selectedEvent.id }).then((result) => {
 				onClose?.();
 				updateCachedEvents(result);
 			});
 		} else {
-			createEvent({ formValues }).then((result) =>  {
+			createEvent({ formValues }).then((result) => {
 				onClose?.();
 				updateCachedEvents(result);
 			});
@@ -133,8 +146,8 @@ export const EventForm = ({ onClose }: IProps) => {
 	};
 
 	const handleRemove = () => {
-		if (selectedEvent?._id) {
-			deleteEvent({ _id: selectedEvent._id }).then((result) =>  {
+		if (selectedEvent?.id) {
+			deleteEvent({ id: selectedEvent.id }).then((result) => {
 				onClose?.();
 				updateCachedEvents(result);
 			});
@@ -145,17 +158,16 @@ export const EventForm = ({ onClose }: IProps) => {
 		<BaseFormModal
 			className={s.wrapper}
 			//
-			title={selectedEvent?._id ? 'Изменить событие' : 'Новое событие'}
+			title={selectedEvent?.id ? 'Изменить событие' : 'Новое событие'}
 			//
 			isLoading={isEventFormLoading}
 			errors={eventFormErrors}
 			isValid={isValid && isDirty}
 			//
 			onSubmit={handleSubmitContext(handleSubmit)}
-			onRemove={selectedEvent?._id ? handleRemove : undefined}
+			onRemove={selectedEvent?.id ? handleRemove : undefined}
 		>
 			<Input className={s.input} label="Заголовок" value={title} onChange={onChangeTitle} />
-
 			<DatePicker
 				className={s.input}
 				locale={locale}
@@ -166,7 +178,6 @@ export const EventForm = ({ onClose }: IProps) => {
 				onOk={onChangeStartTime}
 				value={startTime && dayjs(startTime)}
 			/>
-
 			<DatePicker
 				className={s.input}
 				locale={locale}
@@ -178,7 +189,6 @@ export const EventForm = ({ onClose }: IProps) => {
 				value={endTime && dayjs(endTime)}
 				minDate={startTime ? dayjs(startTime) : undefined}
 			/>
-
 			<CheckboxItem
 				className={s.checkbox}
 				title="Повторяющееся событие"
@@ -188,32 +198,30 @@ export const EventForm = ({ onClose }: IProps) => {
 					onChangeDays(days);
 				}}
 			/>
-
 			{isRecursiveEvent && (
 				<div>
-					Повторять { period === 'week' ? 'каждую' : 'каждый'}
-
+					Повторять {period === 'WEEK' ? 'каждую' : 'каждый'}
 					<InputNumber
 						className={s.numberInput}
 						value={interval}
 						onChange={(num) => onChangeInterval(Math.floor(num ?? 1))}
-						min={1} max={400}
+						min={1}
+						max={400}
 					/>
-
 					<Select
 						className={s.periodSelect}
 						defaultValue={period}
 						onChange={onChangePeriod}
 					>
-						<Option value="day"> День </Option>
-						<Option value="week"> Неделю </Option>
-						<Option value="month"> Месяц </Option>
-						<Option value="year"> Год </Option>
+						{Object.entries(PERIOD_OPTIONS).map(([period, label]) => (
+							<Option value={period} key={period}>
+								{label}
+							</Option>
+						))}
 					</Select>
 				</div>
 			)}
-
-			{isRecursiveEvent && period === 'week' && (
+			{isRecursiveEvent && period === 'WEEK' && (
 				<div className={s.buttonContainer}>
 					{DAYS_OF_WEEK.map((day, number) => (
 						<Button
@@ -227,16 +235,13 @@ export const EventForm = ({ onClose }: IProps) => {
 					))}
 				</div>
 			)}
-
 			<TextArea
 				className={s.input}
 				label="Описание"
 				value={description}
 				onChange={onChangeDescription}
 			/>
-
 			Цвет события
-
 			<div className={s.buttonContainer}>
 				{EVENT_COLORS.map((buttonColor) => (
 					<Button
@@ -249,11 +254,10 @@ export const EventForm = ({ onClose }: IProps) => {
 						type="primary"
 						onClick={() => onChangeColor(buttonColor)}
 					>
-						{ buttonColor === color && '✓' }
+						{buttonColor === color && '✓'}
 					</Button>
 				))}
 			</div>
-
 		</BaseFormModal>
 	);
 };
