@@ -1,0 +1,35 @@
+.wrapper {
+	width: 380px;
+	display: flex;
+	flex-direction: column;
+	gap: 20px;
+}
+
+.input {
+	height: 50px;
+	width: 100%;
+	border-color: #000000;
+}
+
+.numberInput {
+	margin: 0 10px;
+	width: 60px;
+}
+
+.periodSelect {
+	width: 120px;
+}
+
+.buttonContainer {
+	display: flex;
+	gap: 6px;
+}
+
+.dayButton {
+	width: 45px;
+}
+
+.colorButton {
+	width: 36px;
+	border: none;
+}

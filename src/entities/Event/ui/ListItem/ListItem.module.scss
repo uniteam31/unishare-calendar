@@ -1,0 +1,23 @@
+.ListItem {
+    background-color: #fff;
+    border-radius: 12px;
+    height: 80px;
+    padding: 15px 20px;
+    width: 100%;
+
+    .title, .time {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .title {
+        font: var(--font-callout);
+        font-weight: 500;
+    }
+
+    .time {
+        font: var(--font-caption);
+        font-weight: 300;
+    }
+}
